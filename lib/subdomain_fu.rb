@@ -1,4 +1,5 @@
 require 'subdomain_fu/routing_extensions'
+require 'subdomain_fu/url_rewriter'
 
 module SubdomainFu
   # The length of the period-split top-level domain for each environment.
@@ -33,7 +34,8 @@ module SubdomainFu
   def self.subdomain_from(host)
     return nil unless host
     parts = host.split('.')
-    parts[0..-(SubdomainFu.tld_size+2)].join(".")
+    sub = parts[0..-(SubdomainFu.tld_size+2)].join(".")
+    sub.blank? ? nil : sub
   end
   
   def self.host_without_subdomain(host)

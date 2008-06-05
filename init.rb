@@ -1,4 +1,6 @@
 require 'subdomain_fu'
-require 'subdomain_fu/url_rewriter'
 
 ActionController::Base.send :include, SubdomainFu::Controller
+
+ActionController::Routing::RouteSet.send :include, SubdomainFu::RouteSetExtensions
+ActionController::Routing::Route.send :include, SubdomainFu::RouteExtensions

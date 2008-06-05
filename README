@@ -17,8 +17,6 @@ Feature Wishlist
 
 * Link between subdomains via :subdomain option (with :subdomain => false corresponding to no subdomain)
 * Route between subdomains, raise error on subdomain-requiring subdomains that don't have an subdomain
-* Get current subdomain from subdomain
-* Must use _url instead of _path to switch between subdomains or switch to no subdomain
 
 link_to "Some Subdomain Page", some_resources_path()
 
