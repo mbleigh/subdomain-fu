@@ -13,9 +13,7 @@ module ActionController
     private
     
     def rewrite_url_with_subdomains(options)
-      puts "Comparing: #{options[:subdomain]}, #{options[:host] || @request.host_with_port}"        
       unless SubdomainFu.same_subdomain?(options[:subdomain], (options[:host] || @request.host_with_port))
-        puts "Different: #{options[:subdomain]}, #{options[:host] || @request.host_with_port}"        
         options[:only_path] = false
         options[:host] = SubdomainFu.rewrite_host_for_subdomains(options.delete(:subdomain), options[:host] || @request.host_with_port)
       end

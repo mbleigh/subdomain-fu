@@ -63,7 +63,7 @@ module SubdomainFu
   
   module Controller
     def self.included(controller)
-      controller.helper_method(:current_subdomain, :current_subdomain)
+      controller.helper_method(:current_subdomain)
     end
     
     protected
