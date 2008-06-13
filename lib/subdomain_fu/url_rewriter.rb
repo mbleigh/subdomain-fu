@@ -1,14 +1,15 @@
 module ActionController
   module UrlWriter
     def url_for_with_subdomains(options)
-      if SubdomainFu.same_subdomain?(options[:subdomain], options[:host])
+      if SubdomainFu.same_subdomain?(options[:subdomain], options[:host] || default_url_options[:host])
         options.delete(:subdomain)
       else
         options[:only_path] = false 
-        options[:host] = SubdomainFu.rewrite_host_for_subdomains(options.delete(:subdomain), options[:host])
+        options[:host] = SubdomainFu.rewrite_host_for_subdomains(options.delete(:subdomain), options[:host] || default_url_options[:host])
       end
       url_for_without_subdomains(options)
     end
+    alias_method_chain :url_for, :subdomains
   end
   
   class UrlRewriter #:nodoc:

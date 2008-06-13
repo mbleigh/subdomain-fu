@@ -24,14 +24,17 @@ module SubdomainFu
     tld_sizes[RAILS_ENV.to_sym]
   end
   
+  # Sets the TLD Size of the current environment
   def self.tld_size=(value)
     tld_sizes[RAILS_ENV.to_sym] = value
   end
   
+  # Is the current subdomain either nil or a mirror?
   def self.has_subdomain?(subdomain)
     !subdomain.blank? && !SubdomainFu.mirrors.include?(subdomain)
   end
   
+  # Gets the subdomain from the host based on the TLD size
   def self.subdomain_from(host)
     return nil unless host
     parts = host.split('.')
@@ -44,6 +47,7 @@ module SubdomainFu
     parts[-(SubdomainFu.tld_size+1)..-1].join(".")
   end
   
+  # Rewrites the subdomain of the host unless they are equivalent (i.e. mirrors of each other)
   def self.rewrite_host_for_subdomains(subdomain, host)
     if same_subdomain?(subdomain, host)
       host
@@ -52,12 +56,14 @@ module SubdomainFu
     end
   end
   
+  # Changes the subdomain of the host to whatever is passed in.
   def self.change_subdomain_of_host(subdomain, host)
     host = SubdomainFu.host_without_subdomain(host)
     host = "#{subdomain}.#{host}" if subdomain
     host
   end
   
+  # Is this subdomain equivalent to the subdomain found in this host string?
   def self.same_subdomain?(subdomain, host)
     result = subdomain == SubdomainFu.subdomain_from(host) || 
       (!SubdomainFu.has_subdomain?(subdomain) && !SubdomainFu.has_subdomain?(SubdomainFu.subdomain_from(host)))
