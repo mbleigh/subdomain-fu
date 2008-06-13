@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
               "lib/subdomain_fu",
               "lib/subdomain_fu/routing_extensions.rb",
               "lib/subdomain_fu/url_rewriter.rb",
-              "lib/subdomain_fu.rb",
+              "lib/subdomain-fu.rb",
               "rails/init.rb",
               "spec/spec_helper.rb",
               "spec/subdomain_fu_spec.rb",
