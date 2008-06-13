@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
               "lib/subdomain_fu/url_rewriter.rb",
               "lib/subdomain_fu.rb",
               "rails/init.rb",
-              "spec/debug.log",
               "spec/spec_helper.rb",
               "spec/subdomain_fu_spec.rb",
               "spec/url_rewriter_spec.rb",
