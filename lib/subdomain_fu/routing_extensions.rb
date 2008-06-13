@@ -1,5 +1,6 @@
 # Thanks to Jamis Buck for ideas on this stuff
 # http://weblog.jamisbuck.org/2006/10/26/monkey-patching-rails-extending-routes-2
+
 module SubdomainFu
   module RouteExtensions
     def self.included(base)

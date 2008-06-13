@@ -7,8 +7,9 @@ module SubdomainFu
   # has a tld_size of two.
   #
   # To set a tld size for a given environment, just call SubdomainFu.tld_sizes[:environment] = value
+  DEFAULT_TLD_SIZES = {:development => 0, :test => 0, :production => 1}
   mattr_accessor :tld_sizes
-  @@tld_sizes = {:development => 0, :test => 0, :production => 1}
+  @@tld_sizes = DEFAULT_TLD_SIZES.dup
   
   # Subdomains that are equivalent to going to the website with no subdomain at all.
   # Defaults to "www" as the only member.
@@ -28,7 +29,7 @@ module SubdomainFu
   end
   
   def self.has_subdomain?(subdomain)
-    subdomain && !SubdomainFu.mirrors.include?(subdomain)
+    !subdomain.blank? && !SubdomainFu.mirrors.include?(subdomain)
   end
   
   def self.subdomain_from(host)
