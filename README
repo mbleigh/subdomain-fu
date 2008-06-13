@@ -1,7 +1,3 @@
-******************************************************************* 
-*** THIS PLUGIN IS NOT COMPLETE, PLEASE DON'T TRY TO USE IT YET ***
-*******************************************************************
-
 SubdomainFu
 ===========
 
@@ -57,7 +53,12 @@ call to use (or lose) a subdomain:
 url_for(:controller => "my_controller", :action => "my_action", :subdomain => "awesome")
 users_url(:subdomain => false) # specifying "false" will remove any current subdomain
 
+Known Issues / TODO
+===================
 
+* TODO: Implement route conditions that require either a subdomain or no subdomain
+* TODO: Spec out URL Rewriting more completely, test with different domain levels etc.
+* TODO: Implement "preferred_mirror" to automatically use "www" for example if that's desired.
 
 Copyright (c) 2008 Michael Bleigh (http://www.mbleigh.com/) and 
 Intridea, Inc. (http://www.intridea.com/). Released under the MIT license
