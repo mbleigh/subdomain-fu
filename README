@@ -3,12 +3,24 @@
 *******************************************************************
 
 SubdomainFu
-=========
+===========
 
 SubdomainFu provides a modern implementation of subdomain handling in Rails.
 It takes aspects from account_location, request_routing, and other snippets
 found around the web and combines them to provide a single, simple solution
-for subdomain-based route management.
+for subdomain-based route and url management.
+
+Installation
+============
+
+SubdomainFu is available both as a traditional plugin and a GemPlugin. To
+install it as a traditional plugin (Rails 2.1 or later):
+
+  script/plugin install git://github.com/mbleigh/subdomain-fu.git
+  
+To use it as a GemPlugin, add it to your environment.rb:
+
+  config.gem 'mbleigh-subdomain-fu', :source => "http://gems.github.com", :lib => "subdomain-fu"
 
 Configuration
 =============
@@ -18,6 +30,7 @@ configuration required is:
 
 tld_size
 --------
+
 A hash for each environment of the size of the top-level domain name. 
 (something.com = 1, localhost = 0, etc.)
 
@@ -43,6 +56,8 @@ call to use (or lose) a subdomain:
 
 url_for(:controller => "my_controller", :action => "my_action", :subdomain => "awesome")
 users_url(:subdomain => false) # specifying "false" will remove any current subdomain
+
+
 
 Copyright (c) 2008 Michael Bleigh (http://www.mbleigh.com/) and 
 Intridea, Inc. (http://www.intridea.com/). Released under the MIT license
