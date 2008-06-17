@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe "SubdomainFu URL Writing" do
   before do
     SubdomainFu.tld_size = 1
+    default_url_options[:host] = "testapp.com"
   end
   
   describe "#url_for" do
@@ -43,8 +44,31 @@ describe "SubdomainFu URL Writing" do
     end
   end
   
+  describe "Resourced Routes" do
+    it "should be able to add a subdomain" do
+      foo_path(:id => "something", :subdomain => "awesome").should == "http://awesome.testapp.com/foos/something"
+    end
+    
+    it "should be able to remove a subdomain" do
+      default_url_options[:host] = "awesome.testapp.com"
+      foo_path(:id => "something", :subdomain => false).should == "http://testapp.com/foos/something"
+    end
+
+    it "should work when passed in a paramable object" do
+      foo_path(Paramed.new("something"), :subdomain => "awesome").should == "http://awesome.testapp.com/foos/something"
+    end
+    
+    it "should work on nested resource collections" do
+      foo_bars_path(Paramed.new("something"), :subdomain => "awesome").should == "http://awesome.testapp.com/foos/something/bars"
+    end
+    
+    it "should work on nested resource members" do
+      foo_bar_path(Paramed.new("something"),Paramed.new("else"), :subdomain => "awesome").should == "http://awesome.testapp.com/foos/something/bars/else"
+    end
+  end
+  
   after do
     SubdomainFu.tld_size = 0
-    default_url_options[:host] = "testapp.com"
+    default_url_options[:host] = "localhost"
   end
 end

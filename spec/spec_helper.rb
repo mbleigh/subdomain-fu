@@ -10,10 +10,24 @@ ActiveRecord::Base.logger = Logger.new(plugin_spec_dir + "/debug.log")
 
 ActionController::Routing::Routes.draw do |map|
   map.needs_subdomain '/needs_subdomain', :controller => "fu", :action => "awesome", :conditions => {:subdomain => true}
-  map.resources :fu_somethings, :conditions => {:subdomain => true}
+  map.no_subdomain '/no_subdomain', :controller => "fu", :action => "lame", :conditions => {:subdomain => false}
+  map.needs_awesome '/needs_awesome', :controller => "fu", :action => "lame", :conditions => {:subdomain => 'awesome'}
+  
+  map.resources :foos, :conditions => {:subdomain => true} do |fu|
+    fu.resources :bars
+  end
+  
   map.connect '/:controller/:action/:id'
 end
 
+class Paramed
+  def initialize(param)
+    @param = param
+  end
+  
+  def to_param
+    @param || "param"
+  end
+end
 
 include ActionController::UrlWriter
-default_url_options[:host] = "testapp.com"
