@@ -70,6 +70,15 @@ module SubdomainFu
     result
   end
   
+  def self.current_subdomain(request)
+    subdomain = request.subdomains(SubdomainFu.tld_size).join(".")
+    if has_subdomain?(subdomain)
+      subdomain
+    else
+      nil
+    end
+  end
+  
   module Controller
     def self.included(controller)
       controller.helper_method(:current_subdomain)
@@ -78,7 +87,7 @@ module SubdomainFu
     protected
     
     def current_subdomain
-      request.subdomains(SubdomainFu.tld_size).join(".")
+      SubdomainFu.current_subdomain(request)
     end
   end
 end

@@ -98,6 +98,28 @@ describe "SubdomainFu" do
     end
   end
   
+  describe "#current_subdomain" do
+    it "should return the current subdomain if there is one" do
+      request = mock("request", :subdomains => ["awesome"])
+      SubdomainFu.current_subdomain(request).should == "awesome"
+    end
+    
+    it "should return nil if there's no subdomain" do
+      request = mock("request", :subdomains => [])
+      SubdomainFu.current_subdomain(request).should be_nil
+    end
+    
+    it "should return nil if the current subdomain is a mirror" do
+      request = mock("request", :subdomains => ["www"])
+      SubdomainFu.current_subdomain(request).should be_nil
+    end
+    
+    it "should return the whole thing (including a .) if there's multiple subdomains" do
+      request = mock("request", :subdomains => ["awesome","rad"])
+      SubdomainFu.current_subdomain(request).should == "awesome.rad"
+    end
+  end
+  
   describe "#same_subdomain?" do
     it { SubdomainFu.same_subdomain?("www","www.localhost").should be_true }
     it { SubdomainFu.same_subdomain?("www","localhost").should be_true }
