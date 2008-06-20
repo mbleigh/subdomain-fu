@@ -1,5 +1,6 @@
 # Thanks to Jamis Buck for ideas on this stuff
 # http://weblog.jamisbuck.org/2006/10/26/monkey-patching-rails-extending-routes-2
+# This is not yet a working part of SubdomainFu.
 
 module SubdomainFu
   module RouteExtensions

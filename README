@@ -18,6 +18,36 @@ To use it as a GemPlugin, add it to your environment.rb:
 
   config.gem 'mbleigh-subdomain-fu', :source => "http://gems.github.com", :lib => "subdomain-fu"
 
+
+Examples
+========
+
+SubdomainFu works inside of Rails's URL Writing mechanisms to provide an easy and seamless
+way to link and otherwise understand cross-subdomain routing. You can use the :subdomain
+option both in named and non-named routes as well as in generated resources routes.
+
+Let's say my domain is 'intridea.com'. Here are some examples of the use of the :subdomain
+option:
+
+url_for(:controller => "my_controller", 
+        :action => "my_action", 
+        :subdomain => "awesome") # => http://awesome.intridea.com/my_controller/my_action
+
+Now let's say I'm at http://awesome.intridea.com/ and I want back to the root.
+Specifying "false" will remove any current subdomain:
+
+users_url(:subdomain => false)  # => http://intridea.com/users
+
+Note that this plugin does not honor the :only_path notion of routing when doing
+so would go against the intent of the command. For example, if I were at http://intridea.com
+again:
+
+users_path(:subdomain => "fun") # => http://fun.intridea.com/users
+users_path(:subdomain => false) # => /users
+                              
+In this way you can rest assured that you will never misdirect your links to the
+same subdomain when you meant to change it.
+
 Configuration
 =============
 
@@ -43,22 +73,30 @@ the usage of the root domain.
 
 SubdomainFu.mirrors = %w(www site we) # Defaults to %w(www)
 
-Examples
-========
+preferred_mirror
+----------------
 
-SubdomainFu works in both the URL writing parts of Rails and the routes. For
-URL writing, it provides you an option you can pass into any URL-generating
-call to use (or lose) a subdomain:
+SubdomainFu also understands the notion of a 'preferred mirror', that is, if you
+always want your links going to 'www.yourdomain.com' instead of 'yourdomain.com',
+you can set the preferred mirror like so:
 
-url_for(:controller => "my_controller", :action => "my_action", :subdomain => "awesome")
-users_url(:subdomain => false) # specifying "false" will remove any current subdomain
+SubdomainFu.preferred_mirror = "www"
 
-Known Issues / TODO
-===================
+Now when you create a link to a false subdomain
 
-* TODO: Implement route conditions that require either a subdomain or no subdomain
-* TODO: Spec out URL Rewriting more completely, test with different domain levels etc.
-* TODO: Implement "preferred_mirror" to automatically use "www" for example if that's desired.
+Known Issues / Future Work
+==========================
+
+SubdomainFu will eventually integrate with Rails' routing internals to provide
+the ability to specify routes based on the condition of a specific subdomain or
+simply whether a subdomain is present (or a mirror).
+
+Resources
+=========
+
+* Acts As Community Project: http://actsascommunity.com/projects/subdomain-fu
+* GitHub Repository: http://github.com/mbleigh/subdomain-fu
+* Lighthouse: http://mbleigh.lighthouseapp.com/projects/13148-subdomain-fu
 
 Copyright (c) 2008 Michael Bleigh (http://www.mbleigh.com/) and 
 Intridea, Inc. (http://www.intridea.com/). Released under the MIT license

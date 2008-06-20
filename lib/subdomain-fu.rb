@@ -1,4 +1,4 @@
-require 'subdomain_fu/routing_extensions'
+# require 'subdomain_fu/routing_extensions'
 require 'subdomain_fu/url_rewriter'
 
 module SubdomainFu
@@ -49,10 +49,17 @@ module SubdomainFu
   
   # Rewrites the subdomain of the host unless they are equivalent (i.e. mirrors of each other)
   def self.rewrite_host_for_subdomains(subdomain, host)
-    if same_subdomain?(subdomain, host)
-      host
+    unless needs_rewrite?(subdomain, host)
+      if has_subdomain?(subdomain) || (subdomain_from(host) == SubdomainFu.preferred_mirror) || (!has_subdomain?(subdomain) && SubdomainFu.preferred_mirror == nil)
+        puts "We're not changing the host."
+        host
+      else
+        puts "We're using the preferred mirror."
+        change_subdomain_of_host(SubdomainFu.preferred_mirror, host)
+      end
     else
-      change_subdomain_of_host(subdomain, host)
+      puts "We're changing the host."
+      change_subdomain_of_host(subdomain || SubdomainFu.preferred_mirror, host)
     end
   end
   
@@ -65,9 +72,15 @@ module SubdomainFu
   
   # Is this subdomain equivalent to the subdomain found in this host string?
   def self.same_subdomain?(subdomain, host)
-    result = subdomain == SubdomainFu.subdomain_from(host) || 
+    subdomain = nil unless subdomain
+    (subdomain == SubdomainFu.subdomain_from(host)) || 
       (!SubdomainFu.has_subdomain?(subdomain) && !SubdomainFu.has_subdomain?(SubdomainFu.subdomain_from(host)))
-    result
+  end
+  
+  def self.needs_rewrite?(subdomain, host)
+    subdomain = nil if subdomain.blank? 
+    (!has_subdomain?(subdomain) && subdomain != SubdomainFu.preferred_mirror && SubdomainFu.preferred_mirror != nil) || 
+      !same_subdomain?(subdomain, host)
   end
   
   def self.current_subdomain(request)
