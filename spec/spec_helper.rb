@@ -9,11 +9,11 @@ plugin_spec_dir = File.dirname(__FILE__)
 ActiveRecord::Base.logger = Logger.new(plugin_spec_dir + "/debug.log")
 
 ActionController::Routing::Routes.draw do |map|
-  map.needs_subdomain '/needs_subdomain', :controller => "fu", :action => "awesome", :conditions => {:subdomain => true}
-  map.no_subdomain '/no_subdomain', :controller => "fu", :action => "lame", :conditions => {:subdomain => false}
-  map.needs_awesome '/needs_awesome', :controller => "fu", :action => "lame", :conditions => {:subdomain => 'awesome'}
+  map.needs_subdomain '/needs_subdomain', :controller => "fu", :action => "awesome"
+  map.no_subdomain '/no_subdomain', :controller => "fu", :action => "lame"
+  map.needs_awesome '/needs_awesome', :controller => "fu", :action => "lame"
   
-  map.resources :foos, :conditions => {:subdomain => true} do |fu|
+  map.resources :foos do |fu|
     fu.resources :bars
   end
   

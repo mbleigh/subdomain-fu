@@ -1,4 +1,4 @@
-# require 'subdomain_fu/routing_extensions'
+#require 'subdomain_fu/routing_extensions'
 require 'subdomain_fu/url_rewriter'
 
 module SubdomainFu
@@ -51,14 +51,11 @@ module SubdomainFu
   def self.rewrite_host_for_subdomains(subdomain, host)
     unless needs_rewrite?(subdomain, host)
       if has_subdomain?(subdomain) || (subdomain_from(host) == SubdomainFu.preferred_mirror) || (!has_subdomain?(subdomain) && SubdomainFu.preferred_mirror == nil)
-        puts "We're not changing the host."
         host
       else
-        puts "We're using the preferred mirror."
         change_subdomain_of_host(SubdomainFu.preferred_mirror, host)
       end
     else
-      puts "We're changing the host."
       change_subdomain_of_host(subdomain || SubdomainFu.preferred_mirror, host)
     end
   end

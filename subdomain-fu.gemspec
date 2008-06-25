@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "subdomain-fu"
-  s.version = "0.0.1"
-  s.date = "2008-06-13"
+  s.version = "0.0.2"
+  s.date = "2008-06-25"
   s.summary = "Provides a simple solution for route handling and linking between subdomains in a Rails application."
   s.email = "michael@intridea.com"
   s.homepage = "http://www.actsascommunity.com/projects/subdomain-fu"
