@@ -1,4 +1,4 @@
-#require 'subdomain_fu/routing_extensions'
+require 'subdomain_fu/routing_extensions'
 require 'subdomain_fu/url_rewriter'
 
 module SubdomainFu
@@ -74,8 +74,9 @@ module SubdomainFu
       (!SubdomainFu.has_subdomain?(subdomain) && !SubdomainFu.has_subdomain?(SubdomainFu.subdomain_from(host)))
   end
   
-  def self.needs_rewrite?(subdomain, host)
-    subdomain = nil if subdomain.blank? 
+  def self.needs_rewrite?(subdomain, host)    
+    return false if subdomain.nil?
+    subdomain = nil if subdomain.blank?
     (!has_subdomain?(subdomain) && subdomain != SubdomainFu.preferred_mirror && SubdomainFu.preferred_mirror != nil) || 
       !same_subdomain?(subdomain, host)
   end

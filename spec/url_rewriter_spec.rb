@@ -42,6 +42,21 @@ describe "SubdomainFu URL Writing" do
     it "should should force the full url, even with _path" do
       needs_subdomain_path(:subdomain => "awesome").should == needs_subdomain_url(:subdomain => "awesome")
     end
+    
+    it "should not force the full url if it's the same as the current subdomain" do
+      default_url_options[:host] = "awesome.testapp.com"
+      needs_subdomain_path(:subdomain => "awesome").should == "/needs_subdomain"
+    end
+    
+    it "should not force the full url if the current subdomain is nil and so is the target" do
+      needs_subdomain_path(:subdomain => nil).should == "/needs_subdomain"
+    end
+    
+    it "should not force the full url if no :subdomain option is given" do
+      needs_subdomain_path.should == "/needs_subdomain"
+      default_url_options[:host] = "awesome.testapp.com"
+      needs_subdomain_path.should == "/needs_subdomain"
+    end
   end
   
   describe "Resourced Routes" do

@@ -43,6 +43,8 @@ describe "SubdomainFu" do
   describe "#subdomain_from" do
     it "should return the subdomain based on the TLD of the current environment" do
       SubdomainFu.subdomain_from("awesome.localhost").should == "awesome"
+      SubdomainFu.tld_size = 2
+      SubdomainFu.subdomain_from("awesome.localhost.co.uk").should == "awesome"
       SubdomainFu.tld_size = 1
       SubdomainFu.subdomain_from("awesome.localhost.com").should == "awesome"
       SubdomainFu.tld_size = 0
@@ -75,12 +77,12 @@ describe "SubdomainFu" do
       SubdomainFu.rewrite_host_for_subdomains("cool","www.localhost").should == "cool.localhost"
     end
     
-    it "should remove the subdomain if passed nil when it's not a mirror" do
-      SubdomainFu.rewrite_host_for_subdomains(nil,"cool.localhost").should == "localhost"
+    it "should remove the subdomain if passed false when it's not a mirror" do
+      SubdomainFu.rewrite_host_for_subdomains(false,"cool.localhost").should == "localhost"
     end
     
-    it "should not remove the subdomain if passed nil when it is a mirror" do
-      SubdomainFu.rewrite_host_for_subdomains(nil,"www.localhost").should == "www.localhost"
+    it "should not remove the subdomain if passed false when it is a mirror" do
+      SubdomainFu.rewrite_host_for_subdomains(false,"www.localhost").should == "www.localhost"
     end
   end
   
