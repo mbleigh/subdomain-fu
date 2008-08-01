@@ -29,20 +29,18 @@ module SubdomainFu
   end
   
   module MapperExtensions
-
     def quick_map(has_unless, *args, &block)
       options = args.find{|a| a.is_a?(Hash)}
-      namespace_str = options ? options.delete(:namespace).to_s : 
-        (has_unless ? (ns = args.first and (ns.is_a?(Symbol) || ns.is_a?(String)) ? ns.to_s : nil)  : nil)
+      namespace_str = options ? options.delete(:namespace).to_s : args.join('_or_')
       namespace_str += '_' unless namespace_str.blank?
       mapped_exp = args.map(&:to_s).join('|')
-      conditions_hash = { :subdomain => ( has_unless ? /(#{mapped_exp})/ : /[^(#{mapped_exp})]/) }
+      conditions_hash = { :subdomain => ( has_unless ? /[^(#{mapped_exp})]/ : /(#{mapped_exp})/) }
       with_options(:conditions => conditions_hash, :name_prefix => namespace_str, &block)
     end
     # Adds methods to Mapper to apply an options with a method. Example
     #   map.subdomain :blog { |blog| blog.resources :pages }
     # or
-    #   map.unless_subdomain :blog { |any| any.resources :people }
+    #   map.unless_subdomain :blog { |not_blog| not_blog.resources :people }
     def subdomain(*args, &block)
       quick_map(false, *args, &block)
     end
