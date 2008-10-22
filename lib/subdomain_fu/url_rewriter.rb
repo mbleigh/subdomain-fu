@@ -26,4 +26,20 @@ module ActionController
     end
     alias_method_chain :rewrite_url, :subdomains
   end
+  
+  # hack for http://www.portallabs.com/blog/?p=8
+  module Routing
+    module Optimisation
+      class PositionalArgumentsWithAdditionalParams
+        def guard_condition_with_subdomains
+          # don't allow optimisation if a subdomain is present - fixes a problem
+          # with the subdomain appearing in the query instead of being rewritten
+          # see http://mbleigh.lighthouseapp.com/projects/13148/tickets/8-improper-generated-urls-with-named-routes-for-a-singular-resource
+          guard_condition_without_subdomains + " && !args.last.has_key?(:subdomain)"
+        end
+
+        alias_method_chain :guard_condition, :subdomains
+      end
+    end
+  end
 end
