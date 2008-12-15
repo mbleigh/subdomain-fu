@@ -31,3 +31,4 @@ end
 
 ActionController::Routing::RouteSet.send :include, SubdomainFu::RouteSetExtensions
 ActionController::Routing::Route.send :include, SubdomainFu::RouteExtensions
+ActionController::UrlRewriter::RESERVED_OPTIONS << :subdomain
