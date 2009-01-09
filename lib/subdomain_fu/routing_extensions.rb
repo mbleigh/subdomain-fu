@@ -31,4 +31,9 @@ end
 
 ActionController::Routing::RouteSet.send :include, SubdomainFu::RouteSetExtensions
 ActionController::Routing::Route.send :include, SubdomainFu::RouteExtensions
-ActionController::UrlRewriter::RESERVED_OPTIONS << :subdomain
+
+# UrlRewriter::RESERVED_OPTIONS is only available in Rails >= 2.2
+# http://www.portallabs.com/blog/2008/12/02/fixing-subdomain_fu-with-named-routes-rails-22/
+if Rails::VERSION::MAJOR >= 2 and Rails::VERSION::MINOR >= 2
+  ActionController::UrlRewriter::RESERVED_OPTIONS << :subdomain
+end
