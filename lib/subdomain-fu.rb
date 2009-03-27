@@ -18,6 +18,8 @@ module SubdomainFu
   
   mattr_accessor :preferred_mirror
   @@preferred_mirror = nil
+
+  @@override_only_path = false
   
   # Returns the TLD Size of the current environment.
   def self.tld_size

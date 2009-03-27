@@ -18,8 +18,13 @@ describe "SubdomainFu URL Writing" do
     it "should not change a mirrored subdomain" do
       url_for(:controller => "something", :action => "other", :subdomain => false, :host => "www.testapp.com").should == "http://www.testapp.com/something/other" 
     end
-    
-    it "should should force the full url, even with :only_path" do
+
+    it "should should not force the full url with :only_path if override_only_path is false (default)" do
+      url_for(:controller => "something", :action => "other", :subdomain => "awesome", :only_path => true).should == "/something/other" 
+    end
+
+    it "should should force the full url, even with :only_path if override_only_path is true" do
+      SubdomainFu.override_only_path = true
       url_for(:controller => "something", :action => "other", :subdomain => "awesome", :only_path => true).should == "http://awesome.testapp.com/something/other" 
     end
   end
