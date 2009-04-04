@@ -36,7 +36,7 @@ module SubdomainFu
   
   # Gets the subdomain from the host based on the TLD size
   def self.subdomain_from(host)
-    return nil unless host
+    return nil if host.nil? || /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.match(host)
     parts = host.split('.')
     sub = parts[0..-(SubdomainFu.tld_size+2)].join(".")
     sub.blank? ? nil : sub
