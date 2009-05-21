@@ -10,7 +10,7 @@ module SubdomainFu
 
     def recognition_conditions_with_subdomain
       result = recognition_conditions_without_subdomain
-      result << "conditions[:subdomain] === env[:subdomain]" if conditions[:subdomain] && conditions[:subdomain] != true && conditions[:subdomain] != false
+      result << "conditions[:subdomain] === env[:subdomain].to_s" if conditions[:subdomain] && conditions[:subdomain] != true && conditions[:subdomain] != false
       result << "SubdomainFu.has_subdomain?(env[:subdomain])" if conditions[:subdomain] == true
       result << "!SubdomainFu.has_subdomain?(env[:subdomain])" if conditions[:subdomain] == false
       result
