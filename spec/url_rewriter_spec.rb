@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe "SubdomainFu URL Writing" do
   before do
     SubdomainFu.tld_size = 1
+    SubdomainFu.preferred_mirror = nil
     default_url_options[:host] = "testapp.com"
   end
   
@@ -47,7 +48,12 @@ describe "SubdomainFu URL Writing" do
       default_url_options[:host] = "awesome.testapp.com"
       needs_subdomain_path(:subdomain => "awesome").should == "/needs_subdomain"
     end
-    
+
+    it "should force the full url if it's a different subdomain" do
+      default_url_options[:host] = "awesome.testapp.com"
+      needs_subdomain_path(:subdomain => "crazy").should == "http://crazy.testapp.com/needs_subdomain"
+    end
+
     it "should not force the full url if the current subdomain is nil and so is the target" do
       needs_subdomain_path(:subdomain => nil).should == "/needs_subdomain"
     end
@@ -72,11 +78,25 @@ describe "SubdomainFu URL Writing" do
     it "should work when passed in a paramable object" do
       foo_path(Paramed.new("something"), :subdomain => "awesome").should == "http://awesome.testapp.com/foos/something"
     end
+
+    it "should work when passed in a paramable object" do
+      foo_path(Paramed.new("something"), :subdomain => "awesome").should == "http://awesome.testapp.com/foos/something"
+    end
     
+    it "should work when passed in a paramable object and no subdomain to a _path" do
+      default_url_options[:host] = "awesome.testapp.com"
+      foo_path(Paramed.new("something")).should == "/foos/something"
+    end
+
+    it "should work when passed in a paramable object and no subdomain to a _url" do
+      default_url_options[:host] = "awesome.testapp.com"
+      foo_url(Paramed.new("something")).should == "http://awesome.testapp.com/foos/something"
+    end
+
     it "should work on nested resource collections" do
       foo_bars_path(Paramed.new("something"), :subdomain => "awesome").should == "http://awesome.testapp.com/foos/something/bars"
     end
-    
+
     it "should work on nested resource members" do
       foo_bar_path(Paramed.new("something"),Paramed.new("else"), :subdomain => "awesome").should == "http://awesome.testapp.com/foos/something/bars/else"
     end
@@ -91,13 +111,13 @@ describe "SubdomainFu URL Writing" do
       default_url_options[:host] = "awesome.testapp.com"
       needs_subdomain_url(:subdomain => false).should == "http://www.testapp.com/needs_subdomain"
     end
-    
+
     it "should force a switch to no subdomain on a mirror if preferred_mirror is false" do
       SubdomainFu.preferred_mirror = false
       default_url_options[:host] = "www.testapp.com"
       needs_subdomain_url(:subdomain => false).should == "http://testapp.com/needs_subdomain"
     end
-    
+
     after do
       SubdomainFu.preferred_mirror = nil
     end

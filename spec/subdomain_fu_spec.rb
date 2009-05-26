@@ -1,6 +1,11 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe "SubdomainFu" do
+  before do
+    SubdomainFu.tld_sizes = SubdomainFu::DEFAULT_TLD_SIZES.dup
+    SubdomainFu.preferred_mirror = nil
+  end
+
   describe "TLD Sizes" do
     before do
       SubdomainFu.tld_sizes = SubdomainFu::DEFAULT_TLD_SIZES.dup
@@ -37,6 +42,7 @@ describe "SubdomainFu" do
     it "shoud be false for a nil or blank subdomain" do
       SubdomainFu.has_subdomain?("").should be_false
       SubdomainFu.has_subdomain?(nil).should be_false
+      SubdomainFu.has_subdomain?(false).should be_false
     end
   end
   
@@ -63,7 +69,19 @@ describe "SubdomainFu" do
     SubdomainFu.host_without_subdomain("awesome.localhost:3000").should == "localhost:3000"
     SubdomainFu.host_without_subdomain("something.awful.localhost:3000").should == "localhost:3000"
   end
-  
+
+  describe "#preferred_mirror?" do
+    describe "when preferred_mirror is false" do
+      before do
+        SubdomainFu.preferred_mirror = false
+      end
+
+      it "should return true for false" do
+        SubdomainFu.preferred_mirror?(false).should be_true
+      end
+    end
+  end
+
   describe "#rewrite_host_for_subdomains" do
     it "should not change the same subdomain" do
       SubdomainFu.rewrite_host_for_subdomains("awesome","awesome.localhost").should == "awesome.localhost"
@@ -83,6 +101,16 @@ describe "SubdomainFu" do
     
     it "should not remove the subdomain if passed false when it is a mirror" do
       SubdomainFu.rewrite_host_for_subdomains(false,"www.localhost").should == "www.localhost"
+    end
+
+    describe "when preferred_mirror is false" do
+      before do
+        SubdomainFu.preferred_mirror = false
+      end
+
+      it "should remove the subdomain if passed false when it is a mirror" do
+        SubdomainFu.rewrite_host_for_subdomains(false,"www.localhost").should == "localhost"
+      end
     end
   end
   
@@ -129,5 +157,25 @@ describe "SubdomainFu" do
     it { SubdomainFu.same_subdomain?("cool","awesome.localhost").should be_false }
     it { SubdomainFu.same_subdomain?(nil,"www.localhost").should be_true }
     it { SubdomainFu.same_subdomain?("www","awesome.localhost").should be_false }
+  end
+
+  describe "#needs_rewrite?" do
+    it { SubdomainFu.needs_rewrite?("www","www.localhost").should be_false }
+    it { SubdomainFu.needs_rewrite?("www","localhost").should be_false }
+    it { SubdomainFu.needs_rewrite?("awesome","www.localhost").should be_true }
+    it { SubdomainFu.needs_rewrite?("cool","awesome.localhost").should be_true }
+    it { SubdomainFu.needs_rewrite?(nil,"www.localhost").should be_false }
+    it { SubdomainFu.needs_rewrite?(nil,"awesome.localhost").should be_false }
+    it { SubdomainFu.needs_rewrite?(false,"awesome.localhost").should be_true }
+    it { SubdomainFu.needs_rewrite?(false,"www.localhost").should be_false }
+    it { SubdomainFu.needs_rewrite?("www","awesome.localhost").should be_true }
+
+    describe "when preferred_mirror is false" do
+      before do
+        SubdomainFu.preferred_mirror = false
+      end
+
+      it { SubdomainFu.needs_rewrite?(false,"www.localhost").should be_true }
+    end
   end
 end
