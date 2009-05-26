@@ -98,9 +98,13 @@ describe "SubdomainFu" do
     it "should remove the subdomain if passed false when it's not a mirror" do
       SubdomainFu.rewrite_host_for_subdomains(false,"cool.localhost").should == "localhost"
     end
-    
+
     it "should not remove the subdomain if passed false when it is a mirror" do
       SubdomainFu.rewrite_host_for_subdomains(false,"www.localhost").should == "www.localhost"
+    end
+
+    it "should not remove the subdomain if passed nil when it's not a mirror" do
+      SubdomainFu.rewrite_host_for_subdomains(nil,"cool.localhost").should == "cool.localhost"
     end
 
     describe "when preferred_mirror is false" do
@@ -110,6 +114,10 @@ describe "SubdomainFu" do
 
       it "should remove the subdomain if passed false when it is a mirror" do
         SubdomainFu.rewrite_host_for_subdomains(false,"www.localhost").should == "localhost"
+      end
+
+      it "should not remove the subdomain if passed nil when it's not a mirror" do
+        SubdomainFu.rewrite_host_for_subdomains(nil,"cool.localhost").should == "cool.localhost"
       end
     end
   end
@@ -176,6 +184,7 @@ describe "SubdomainFu" do
       end
 
       it { SubdomainFu.needs_rewrite?(false,"www.localhost").should be_true }
+      it { SubdomainFu.needs_rewrite?(nil,"awesome.localhost").should be_false }
     end
   end
 end

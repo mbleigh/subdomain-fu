@@ -117,6 +117,11 @@ describe "SubdomainFu URL Writing" do
       needs_subdomain_url.should == "http://www.testapp.com/needs_subdomain"
     end
 
+    it "should work when passed in a paramable object and no subdomain to a _url" do
+      default_url_options[:host] = "awesome.testapp.com"
+      foo_url(Paramed.new("something")).should == "http://awesome.testapp.com/foos/something"
+    end
+
     it "should force a switch to no subdomain on a mirror if preferred_mirror is false" do
       SubdomainFu.preferred_mirror = false
       default_url_options[:host] = "www.testapp.com"

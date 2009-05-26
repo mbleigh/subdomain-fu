@@ -54,14 +54,15 @@ module SubdomainFu
   
   # Rewrites the subdomain of the host unless they are equivalent (i.e. mirrors of each other)
   def self.rewrite_host_for_subdomains(subdomain, host)
-    unless needs_rewrite?(subdomain, host)
-      if has_subdomain?(subdomain) || preferred_mirror?(subdomain_from(host))
+    if needs_rewrite?(subdomain, host)
+      change_subdomain_of_host(subdomain || SubdomainFu.preferred_mirror, host)
+    else
+      if has_subdomain?(subdomain) || preferred_mirror?(subdomain_from(host)) ||
+          (subdomain.nil? && has_subdomain?(subdomain_from(host)))
         host
       else
         change_subdomain_of_host(SubdomainFu.preferred_mirror, host)
       end
-    else
-      change_subdomain_of_host(subdomain || SubdomainFu.preferred_mirror, host)
     end
   end
   
@@ -101,7 +102,6 @@ module SubdomainFu
     end
     
     protected
-    
     def current_subdomain
       SubdomainFu.current_subdomain(request)
     end
