@@ -112,6 +112,11 @@ describe "SubdomainFu URL Writing" do
       needs_subdomain_url(:subdomain => false).should == "http://www.testapp.com/needs_subdomain"
     end
 
+    it "should switch to the preferred mirror automatically" do
+      default_url_options[:host] = "testapp.com"
+      needs_subdomain_url.should == "http://www.testapp.com/needs_subdomain"
+    end
+
     it "should force a switch to no subdomain on a mirror if preferred_mirror is false" do
       SubdomainFu.preferred_mirror = false
       default_url_options[:host] = "www.testapp.com"

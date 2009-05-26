@@ -1,11 +1,11 @@
 module ActionController
   module UrlWriter
     def url_for_with_subdomains(options)
-      unless SubdomainFu.needs_rewrite?(options[:subdomain], options[:host] || default_url_options[:host])
-        options.delete(:subdomain)
-      else
+      if SubdomainFu.needs_rewrite?(options[:subdomain], options[:host] || default_url_options[:host]) || options[:only_path] == false
         options[:only_path] = false 
         options[:host] = SubdomainFu.rewrite_host_for_subdomains(options.delete(:subdomain), options[:host] || default_url_options[:host])
+      else
+        options.delete(:subdomain)
       end
       url_for_without_subdomains(options)
     end
@@ -16,11 +16,11 @@ module ActionController
     private
     
     def rewrite_url_with_subdomains(options)
-      unless SubdomainFu.needs_rewrite?(options[:subdomain], options[:host] || @request.host_with_port)
-        options.delete(:subdomain)
-      else
+      if SubdomainFu.needs_rewrite?(options[:subdomain], options[:host] || @request.host_with_port) || options[:only_path] == false
         options[:only_path] = false
         options[:host] = SubdomainFu.rewrite_host_for_subdomains(options.delete(:subdomain), options[:host] || @request.host_with_port)
+      else
+        options.delete(:subdomain)
       end
       rewrite_url_without_subdomains(options)
     end
