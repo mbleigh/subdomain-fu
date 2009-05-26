@@ -31,7 +31,12 @@ module SubdomainFu
   
   # Is the current subdomain either nil or a mirror?
   def self.has_subdomain?(subdomain)
-    !subdomain.blank? && !SubdomainFu.mirrors.include?(subdomain)
+    subdomain != false && !subdomain.blank? && !SubdomainFu.mirrors.include?(subdomain)
+  end
+
+  # Is the subdomain a preferred mirror
+  def self.preferred_mirror?(subdomain)
+    subdomain == SubdomainFu.preferred_mirror || SubdomainFu.preferred_mirror.nil?
   end
   
   # Gets the subdomain from the host based on the TLD size
@@ -50,7 +55,7 @@ module SubdomainFu
   # Rewrites the subdomain of the host unless they are equivalent (i.e. mirrors of each other)
   def self.rewrite_host_for_subdomains(subdomain, host)
     unless needs_rewrite?(subdomain, host)
-      if has_subdomain?(subdomain) || (subdomain_from(host) == SubdomainFu.preferred_mirror) || (!has_subdomain?(subdomain) && SubdomainFu.preferred_mirror == nil)
+      if has_subdomain?(subdomain) || preferred_mirror?(subdomain_from(host))
         host
       else
         change_subdomain_of_host(SubdomainFu.preferred_mirror, host)
@@ -70,14 +75,14 @@ module SubdomainFu
   # Is this subdomain equivalent to the subdomain found in this host string?
   def self.same_subdomain?(subdomain, host)
     subdomain = nil unless subdomain
-    (subdomain == SubdomainFu.subdomain_from(host)) || 
-      (!SubdomainFu.has_subdomain?(subdomain) && !SubdomainFu.has_subdomain?(SubdomainFu.subdomain_from(host)))
+    (subdomain == subdomain_from(host)) ||
+      (!has_subdomain?(subdomain) && !has_subdomain?(subdomain_from(host)))
   end
   
-  def self.needs_rewrite?(subdomain, host)    
+  def self.needs_rewrite?(subdomain, host)
     return false if subdomain.nil?
-    subdomain = nil if subdomain.blank?
-    (!has_subdomain?(subdomain) && subdomain != SubdomainFu.preferred_mirror && SubdomainFu.preferred_mirror != nil) || 
+
+    (!has_subdomain?(subdomain) && preferred_mirror?(subdomain) && !preferred_mirror?(subdomain_from(host))) || 
       !same_subdomain?(subdomain, host)
   end
   

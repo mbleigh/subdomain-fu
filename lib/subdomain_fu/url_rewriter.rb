@@ -16,7 +16,7 @@ module ActionController
     private
     
     def rewrite_url_with_subdomains(options)
-      unless SubdomainFu.needs_rewrite?(options[:subdomain], (options[:host] || @request.host_with_port))
+      unless SubdomainFu.needs_rewrite?(options[:subdomain], options[:host] || @request.host_with_port)
         options.delete(:subdomain)
       else
         options[:only_path] = false
