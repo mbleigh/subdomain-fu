@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe "SubdomainFu" do
   before do
     SubdomainFu.tld_sizes = SubdomainFu::DEFAULT_TLD_SIZES.dup
+    SubdomainFu.mirrors = SubdomainFu::DEFAULT_MIRRORS.dup
     SubdomainFu.preferred_mirror = nil
   end
 

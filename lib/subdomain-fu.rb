@@ -13,8 +13,9 @@ module SubdomainFu
   
   # Subdomains that are equivalent to going to the website with no subdomain at all.
   # Defaults to "www" as the only member.
+  DEFAULT_MIRRORS = %w(www)
   mattr_accessor :mirrors
-  @@mirrors = %w(www)
+  @@mirrors = DEFAULT_MIRRORS.dup
   
   mattr_accessor :preferred_mirror
   @@preferred_mirror = nil

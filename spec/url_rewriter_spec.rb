@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe "SubdomainFu URL Writing" do
   before do
     SubdomainFu.tld_size = 1
+    SubdomainFu.mirrors = SubdomainFu::DEFAULT_MIRRORS.dup
     SubdomainFu.preferred_mirror = nil
     default_url_options[:host] = "testapp.com"
   end
