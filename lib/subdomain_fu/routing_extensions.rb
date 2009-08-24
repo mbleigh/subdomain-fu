@@ -25,7 +25,7 @@ module SubdomainFu
 
     def extract_request_environment_with_subdomain(request)
       env = extract_request_environment_without_subdomain(request)
-      env.merge(:host => request.host, :domain => request.domain, :subdomain => SubdomainFu.subdomain_from(request.host))
+      env.merge(:host => request.host, :domain => request.domain, :subdomain => SubdomainFu.non_mirror_subdomain_from(request.host))
     end
   end
 end

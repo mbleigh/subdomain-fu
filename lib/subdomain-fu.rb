@@ -19,6 +19,9 @@ module SubdomainFu
   
   mattr_accessor :preferred_mirror
   @@preferred_mirror = nil
+
+  mattr_accessor :override_only_path
+  @@override_only_path = false
   
   # Returns the TLD Size of the current environment.
   def self.tld_size
@@ -48,6 +51,12 @@ module SubdomainFu
     sub.blank? ? nil : sub
   end
   
+  # Gets only non-mirror subdomains from the host based on the TLD size
+  def self.non_mirror_subdomain_from(host)
+    sub = subdomain_from(host) 
+    has_subdomain?(sub) ? sub : nil 
+  end
+
   def self.host_without_subdomain(host)
     parts = host.split('.')
     parts[-(SubdomainFu.tld_size+1)..-1].join(".")
