@@ -10,10 +10,9 @@ module SubdomainFu
 
     def recognition_conditions_with_subdomain
       result = recognition_conditions_without_subdomain
-      result << "conditions[:subdomain] === env[:subdomain].to_s" if conditions[:subdomain] && conditions[:subdomain] != true && conditions[:subdomain] != false
+      result << "conditions[:subdomain] === env[:subdomain]" if conditions[:subdomain] && conditions[:subdomain] != true && conditions[:subdomain] != false
       result << "SubdomainFu.has_subdomain?(env[:subdomain])" if conditions[:subdomain] == true
       result << "!SubdomainFu.has_subdomain?(env[:subdomain])" if conditions[:subdomain] == false
-      result << "conditions[:host] === env[:host]"  if conditions[:host]
       result
     end
   end
@@ -25,7 +24,7 @@ module SubdomainFu
 
     def extract_request_environment_with_subdomain(request)
       env = extract_request_environment_without_subdomain(request)
-      env.merge(:host => request.host, :domain => request.domain, :subdomain => SubdomainFu.non_mirror_subdomain_from(request.host))
+      env.merge(:host => request.host, :domain => request.domain, :subdomain => SubdomainFu.subdomain_from(request.host))
     end
   end
 end
