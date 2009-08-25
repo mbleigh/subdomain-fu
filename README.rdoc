@@ -10,11 +10,11 @@ for subdomain-based route and url management.
 SubdomainFu is available both as a traditional plugin and a GemPlugin. To
 install it as a traditional plugin (Rails 2.1 or later):
 
-  script/plugin install git://github.com/mbleigh/subdomain-fu.git
+  script/plugin install git://github.com/pboling/subdomain-fu.git
   
 To use it as a GemPlugin, add it to your environment.rb:
 
-  config.gem 'mbleigh-subdomain-fu', :source => "http://gems.github.com", :lib => "subdomain-fu"
+  config.gem 'pboling-subdomain-fu', :source => "http://gems.github.com", :lib => "subdomain-fu"
 
 
 == Examples
