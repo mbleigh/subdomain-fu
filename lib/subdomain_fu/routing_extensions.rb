@@ -27,8 +27,30 @@ module SubdomainFu
       env.merge(:host => request.host, :domain => request.domain, :subdomain => SubdomainFu.subdomain_from(request.host))
     end
   end
+  
+  module MapperExtensions
+    def quick_map(has_unless, *args, &block)
+      options = args.find{|a| a.is_a?(Hash)}
+      namespace_str = options ? options.delete(:namespace).to_s : args.join('_or_')
+      namespace_str += '_' unless namespace_str.blank?
+      mapped_exp = args.map(&:to_s).join('|')
+      conditions_hash = { :subdomain => ( has_unless ? /[^(#{mapped_exp})]/ : /(#{mapped_exp})/) }
+      with_options(:conditions => conditions_hash, :name_prefix => namespace_str, &block)
+    end
+    # Adds methods to Mapper to apply an options with a method. Example
+    #   map.subdomain :blog { |blog| blog.resources :pages }
+    # or
+    #   map.unless_subdomain :blog { |not_blog| not_blog.resources :people }
+    def subdomain(*args, &block)
+      quick_map(false, *args, &block)
+    end
+    def unless_subdomain(*args, &block)
+      quick_map(true, *args, &block)
+    end
+  end
 end
 
+ActionController::Routing::RouteSet::Mapper.send :include, SubdomainFu::MapperExtensions
 ActionController::Routing::RouteSet.send :include, SubdomainFu::RouteSetExtensions
 ActionController::Routing::Route.send :include, SubdomainFu::RouteExtensions
 
