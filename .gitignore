@@ -3,3 +3,4 @@
 .svn
 /pkg
 .idea
+*.gem
