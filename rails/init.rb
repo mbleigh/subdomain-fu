@@ -1,5 +1,3 @@
-require 'action_controller'
-
 # Add this path to ruby load path
 $:.unshift "#{File.dirname(__FILE__)}/../lib"
 

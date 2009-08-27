@@ -1,8 +1,8 @@
 module ActionController
   module UrlWriter
     def url_for_with_subdomains(options)
-      if SubdomainFu.needs_rewrite?(options[:subdomain], options[:host] || default_url_options[:host])
-        options[:only_path] = false if SubdomainFu.override_only_path
+      if SubdomainFu.needs_rewrite?(options[:subdomain], options[:host] || default_url_options[:host]) || options[:only_path] == false
+        options[:only_path] = false if SubdomainFu.override_only_path?
         options[:host] = SubdomainFu.rewrite_host_for_subdomains(options.delete(:subdomain), options[:host] || default_url_options[:host])
       else
         options.delete(:subdomain)
@@ -11,14 +11,15 @@ module ActionController
     end
     alias_method_chain :url_for, :subdomains
   end
-  
+
   class UrlRewriter #:nodoc:
     private
-    
+
     def rewrite_url_with_subdomains(options)
-      if SubdomainFu.needs_rewrite?(options[:subdomain], (options[:host] || @request.host_with_port))
-        options[:only_path] = false if SubdomainFu.override_only_path
+      if SubdomainFu.needs_rewrite?(options[:subdomain], (options[:host] || @request.host_with_port)) || options[:only_path] == false
+        options[:only_path] = false if SubdomainFu.override_only_path?
         options[:host] = SubdomainFu.rewrite_host_for_subdomains(options.delete(:subdomain), options[:host] || @request.host_with_port)
+        puts "options[:host]: #{options[:host].inspect}"
       else
         options.delete(:subdomain)
       end
@@ -26,7 +27,7 @@ module ActionController
     end
     alias_method_chain :rewrite_url, :subdomains
   end
-  
+
   if Rails::VERSION::MAJOR >= 2 and Rails::VERSION::MINOR <= 1
     # hack for http://www.portallabs.com/blog/2008/10/22/fixing-subdomain_fu-with-named-routes/
     module Routing

@@ -78,7 +78,8 @@ you can set the preferred mirror like so:
 
 SubdomainFu.preferred_mirror = "www"
 
-Now when you create a link to a false subdomain
+Now when you create a link with subdomain => false in the options the subdomain
+will default to the preferred mirror.
 
 == Known Issues / Future Work
 

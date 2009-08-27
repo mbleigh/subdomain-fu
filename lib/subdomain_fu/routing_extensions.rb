@@ -16,10 +16,10 @@ module SubdomainFu
       result
     end
   end
-  
+
   module RouteSetExtensions
     def self.included(base)
-      base.alias_method_chain :extract_request_environment, :subdomain  
+      base.alias_method_chain :extract_request_environment, :subdomain
     end
 
     def extract_request_environment_with_subdomain(request)
@@ -27,7 +27,7 @@ module SubdomainFu
       env.merge(:host => request.host, :domain => request.domain, :subdomain => SubdomainFu.subdomain_from(request.host))
     end
   end
-  
+
   module MapperExtensions
     def quick_map(has_unless, *args, &block)
       options = args.find{|a| a.is_a?(Hash)}
