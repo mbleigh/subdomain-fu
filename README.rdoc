@@ -10,11 +10,11 @@ for subdomain-based route and url management.
 SubdomainFu is available both as a traditional plugin and a GemPlugin. To
 install it as a traditional plugin (Rails 2.1 or later):
 
-  script/plugin install git://github.com/pboling/subdomain-fu.git
+  script/plugin install git://github.com/mbleigh/subdomain-fu.git
   
 To use it as a GemPlugin, add it to your environment.rb:
 
-  config.gem 'pboling-subdomain-fu', :source => "http://gems.github.com", :lib => "subdomain-fu"
+  config.gem 'mbleigh-subdomain-fu', :source => "http://gems.github.com", :lib => "subdomain-fu"
 
 
 == Examples
@@ -50,8 +50,7 @@ same subdomain when you meant to change it.
 You may need to configure SubdomainFu based on your development setup. The
 configuration required is:
 
-tld_size
---------
+=== TLD Size
 
 A hash for each environment of the size of the top-level domain name. 
 (something.com = 1, localhost = 0, etc.)
@@ -61,16 +60,14 @@ SubdomainFu.tld_sizes = {:development => 0,
                          :test => 0,
                          :production => 1} # set all at once (also the defaults)
                          
-mirrors
--------
+=== Mirrors
 
 Mirrors are the subdomains that are equivalent to no subdomain (i.e. they 'mirror')
 the usage of the root domain.
 
 SubdomainFu.mirrors = %w(www site we) # Defaults to %w(www)
 
-preferred_mirror
-----------------
+=== Preferred Mirror
 
 SubdomainFu also understands the notion of a 'preferred mirror', that is, if you
 always want your links going to 'www.yourdomain.com' instead of 'yourdomain.com',
@@ -81,17 +78,19 @@ SubdomainFu.preferred_mirror = "www"
 Now when you create a link with subdomain => false in the options the subdomain
 will default to the preferred mirror.
 
-== Known Issues / Future Work
+== Routing
 
-SubdomainFu will eventually integrate with Rails' routing internals to provide
-the ability to specify routes based on the condition of a specific subdomain or
-simply whether a subdomain is present (or a mirror).
+SubdomainFu can also work within Rails' routing for subdomain-specific routes. For instance, if you only wanted your administrative tools available in the "admin" subdomain you could add this to your routes.rb file:
+
+    map.with_options :conditions => {:subdomain => 'admin} do |admin|
+      admin.resources :posts
+      admin.resources :users
+    end
 
 == Resources
 
-* Acts As Community Project: http://actsascommunity.com/projects/subdomain-fu
 * GitHub Repository: http://github.com/mbleigh/subdomain-fu
-* Lighthouse: http://mbleigh.lighthouseapp.com/projects/13148-subdomain-fu
+* RDocs: http://rdoc.info/projects/mbleigh/subdomain-fu
 
 Copyright (c) 2008 Michael Bleigh (http://www.mbleigh.com/) and 
 Intridea, Inc. (http://www.intridea.com/). Released under the MIT license
