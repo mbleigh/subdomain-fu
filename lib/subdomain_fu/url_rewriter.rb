@@ -19,7 +19,7 @@ module ActionController
       if SubdomainFu.needs_rewrite?(options[:subdomain], (options[:host] || @request.host_with_port)) || options[:only_path] == false
         options[:only_path] = false if SubdomainFu.override_only_path?
         options[:host] = SubdomainFu.rewrite_host_for_subdomains(options.delete(:subdomain), options[:host] || @request.host_with_port)
-        puts "options[:host]: #{options[:host].inspect}"
+        # puts "options[:host]: #{options[:host].inspect}"
       else
         options.delete(:subdomain)
       end

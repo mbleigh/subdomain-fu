@@ -2,15 +2,16 @@
 
 Gem::Specification.new do |s|
   s.name = %q{subdomain-fu}
-  s.version = "0.3.0"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Michael Bleigh","Peter Boling"]
-  s.date = %q{2009-08-24}
+  s.authors = ["Michael Bleigh"]
+  s.date = %q{2009-08-31}
   s.description = %q{SubdomainFu is a Rails plugin to provide all of the basic functionality necessary to handle multiple subdomain applications (such as Basecamp-esque subdomain accounts and more).}
-  s.email = %q{michael@intridea.com peter.boling@gmail.com}
-  s.has_rdoc = true
-  s.rdoc_options = ["--charset=UTF-8"]
+  s.email = %q{michael@intridea.com}
+  s.extra_rdoc_files = [
+    "README.rdoc"
+  ]
   s.files = [
     "CHANGELOG",
      "MIT-LICENSE",
@@ -27,11 +28,13 @@ Gem::Specification.new do |s|
      "spec/url_rewriter_spec.rb"
   ]
   s.homepage = %q{http://github.com/mbleigh/subdomain-fu}
+  s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
+  s.rubyforge_project = %q{subdomain-fu}
   s.rubygems_version = %q{1.3.3}
   s.summary = %q{SubdomainFu is a Rails plugin that provides subdomain routing and URL writing helpers.}
   s.test_files = [
-     "spec/spec_helper.rb",
+    "spec/spec_helper.rb",
      "spec/subdomain_fu_spec.rb",
      "spec/url_rewriter_spec.rb"
   ]

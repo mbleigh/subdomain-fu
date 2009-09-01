@@ -14,6 +14,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "subdomain-fu"
+    gemspec.rubyforge_project = 'subdomain-fu'
     gemspec.summary = "SubdomainFu is a Rails plugin that provides subdomain routing and URL writing helpers."
     gemspec.email = "michael@intridea.com"
     gemspec.homepage = "http://github.com/mbleigh/subdomain-fu"
