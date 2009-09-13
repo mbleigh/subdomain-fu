@@ -45,6 +45,24 @@ users_path(:subdomain => false) # => /users
 In this way you can rest assured that you will never misdirect your links to the
 same subdomain when you meant to change it.
 
+== Use in controllers and views
+
+You have access to current_subdomain and current_domain methods.
+
+current_subdomain - returns all subdomains.
+  Example for the URL http://awesome.website.stuff.example.com current_subdomain will return "awesome.website.stuff"
+
+current_domain - returns all subdomains except for the first subdomain and the domain with TLD.
+  Example for the URL http://awesome.website.stuff.example.com current_subdomain will return "website.stuff.example.com"
+
+This might appear strange at first, but the original plugin in this space was account_location,
+which had this behavior for current domain.  Subdomain-fu did not use the same style as account_location
+with current_subdomain, thus the overlap.  However Subdomain-fu has created a lot of utility in its implementation of
+current_subdomain, so the overlap stays!
+
+If what you really want is just the domain, then use request.domain.  The purpose of current_domain is to only strip
+off the first subdomain, if any, and return what's left.
+
 == Configuration
 
 You may need to configure SubdomainFu based on your development setup. The
