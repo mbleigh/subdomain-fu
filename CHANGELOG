@@ -1,3 +1,9 @@
+== 2009-09-13
+
+* Added current_domain method
+* Added controller & view usage to readme
+* Added more tests
+
 == 2009-08-26
 
 * Fixed needs_rewrite? method
