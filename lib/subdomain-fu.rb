@@ -137,6 +137,7 @@ module SubdomainFu
     end
   end
 
+  #Enables subdomain-fu to more completely replace DHH's account_location plugin
   def self.current_domain(request)
     domain = ""
     domain << request.subdomains[1..-1].join(".") + "." if request.subdomains.length > 1
