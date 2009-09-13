@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{subdomain-fu}
-  s.version = "0.5.0"
+  s.version = "0.5.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Bleigh"]
@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
      "lib/subdomain-fu.rb",
      "lib/subdomain_fu/routing_extensions.rb",
      "lib/subdomain_fu/url_rewriter.rb",
+     "init.rb",
      "rails/init.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",

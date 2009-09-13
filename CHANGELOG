@@ -3,6 +3,7 @@
 * Added current_domain method
 * Added controller & view usage to readme
 * Added more tests
+* Fixing load path
 
 == 2009-08-26
 
