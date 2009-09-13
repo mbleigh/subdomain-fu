@@ -159,6 +159,33 @@ describe "SubdomainFu" do
     end
   end
 
+  describe "#current_domain" do
+    it "should return the current domain if there is one" do
+      request = mock("request", :subdomains => [], :domain => "example.com", :port_string => "")
+      SubdomainFu.current_domain(request).should == "example.com"
+    end
+
+    it "should return empty string if there is no domain" do
+      request = mock("request", :subdomains => [], :domain => "", :port_string => "")
+      SubdomainFu.current_domain(request).should == ""
+    end
+
+    it "should return the current domain if there is only one level of subdomains" do
+      request = mock("request", :subdomains => ["www"], :domain => "example.com", :port_string => "")
+      SubdomainFu.current_domain(request).should == "example.com"
+    end
+
+    it "should return everything but the first level of subdomain when there are multiple levels of subdomains" do
+      request = mock("request", :subdomains => ["awesome","rad","cheese","chevy","ford"], :domain => "example.com", :port_string => "")
+      SubdomainFu.current_domain(request).should == "rad.cheese.chevy.ford.example.com"
+    end
+
+    it "should return the domain with port if port is given" do
+      request = mock("request", :subdomains => ["awesome","rad","cheese","chevy","ford"], :domain => "example.com", :port_string => ":3000")
+      SubdomainFu.current_domain(request).should == "rad.cheese.chevy.ford.example.com:3000"
+    end
+  end
+
   describe "#same_subdomain?" do
     it { SubdomainFu.same_subdomain?("www","www.localhost").should be_true }
     it { SubdomainFu.same_subdomain?("www","localhost").should be_true }

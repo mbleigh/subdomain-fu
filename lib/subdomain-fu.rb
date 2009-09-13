@@ -137,14 +137,24 @@ module SubdomainFu
     end
   end
 
+  def self.current_domain(request)
+    domain = ""
+    domain << request.subdomains[1..-1].join(".") + "." if request.subdomains.length > 1
+    domain << request.domain + request.port_string
+  end
+
   module Controller
     def self.included(controller)
       controller.helper_method(:current_subdomain)
+      controller.helper_method(:current_domain)
     end
 
     protected
     def current_subdomain
       SubdomainFu.current_subdomain(request)
+    end
+    def current_domain
+      SubdomainFu.current_domain(request)
     end
   end
 end
