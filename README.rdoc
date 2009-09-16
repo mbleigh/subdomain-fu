@@ -50,10 +50,10 @@ same subdomain when you meant to change it.
 You have access to current_subdomain and current_domain methods.
 
 current_subdomain - returns all subdomains.
-  Example for the URL http://awesome.website.stuff.example.com current_subdomain will return "awesome.website.stuff"
+  http://awesome.website.stuff.example.com => "awesome.website.stuff"
 
 current_domain - returns all subdomains except for the first subdomain and the domain with TLD.
-  Example for the URL http://awesome.website.stuff.example.com current_subdomain will return "website.stuff.example.com"
+  http://awesome.website.stuff.example.com => "website.stuff.example.com"
 
 This might appear strange at first, but the original plugin in this space was account_location,
 which had this behavior for current domain.  Subdomain-fu did not use the same style as account_location
