@@ -31,6 +31,32 @@ describe "SubdomainFu" do
     end
   end
 
+  describe "#has_domain?" do
+    it "should be true for domains with tld" do
+      SubdomainFu.has_domain?("my.example.com").should be_true
+      SubdomainFu.has_domain?("bonkers.example.net").should be_true
+    end
+
+    it "should be false for IP addresses" do
+      SubdomainFu.has_domain?("192.168.100.252").should be_false
+      SubdomainFu.has_domain?("127.0.0.1").should be_false
+      SubdomainFu.has_domain?("4.2.2.2").should be_false
+    end
+
+    it "should be true for localhost" do
+      SubdomainFu.has_domain?("localhost:3000").should be_true
+      SubdomainFu.has_domain?("www.localhost").should be_true
+      SubdomainFu.has_domain?("www.localhost:3000").should be_true
+      SubdomainFu.has_domain?("localhost").should be_true
+    end
+
+    it "shoud be false for a nil or blank subdomain" do
+      SubdomainFu.has_domain?("").should be_false
+      SubdomainFu.has_domain?(nil).should be_false
+      SubdomainFu.has_domain?(false).should be_false
+    end
+  end
+
   describe "#has_subdomain?" do
     it "should be true for non-mirrored subdomains" do
       SubdomainFu.has_subdomain?("awesome").should be_true

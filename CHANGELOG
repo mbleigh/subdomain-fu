@@ -1,3 +1,9 @@
+== 2009-09-16
+
+* Added has_domain? method
+* Protect current_domain from IP access
+* Added more tests
+
 == 2009-09-13
 
 * Added current_domain method

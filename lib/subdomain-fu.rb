@@ -33,6 +33,10 @@ module SubdomainFu
     tld_sizes[RAILS_ENV.to_sym] = value
   end
 
+  def self.has_domain?(host)
+    !host.blank? && !(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.match(host))
+  end
+  
   # Is the current subdomain either nil or not a mirror?
   def self.has_subdomain?(subdomain)
     subdomain != false && !subdomain.blank? && !SubdomainFu.mirrors.include?(subdomain)
@@ -49,7 +53,7 @@ module SubdomainFu
 
   # Gets the subdomain from the host based on the TLD size
   def self.subdomain_from(host)
-    return nil if host.nil? || /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.match(host)
+    return nil unless has_domain?(host)
     parts = host.split('.')
     sub = parts[0..-(SubdomainFu.tld_size+2)].join(".")
     sub.blank? ? nil : sub
@@ -128,6 +132,7 @@ module SubdomainFu
       !same_subdomain?(subdomain, host)
   end
 
+  #returns nil or the subdomain(s)
   def self.current_subdomain(request)
     subdomain = request.subdomains(SubdomainFu.tld_size).join(".")
     if has_subdomain?(subdomain)
@@ -137,8 +142,10 @@ module SubdomainFu
     end
   end
 
+  #returns nil or the domain or ip
   #Enables subdomain-fu to more completely replace DHH's account_location plugin
   def self.current_domain(request)
+    return request.domain unless has_domain?(request.domain)
     domain = ""
     domain << request.subdomains[1..-1].join(".") + "." if request.subdomains.length > 1
     domain << request.domain + request.port_string
