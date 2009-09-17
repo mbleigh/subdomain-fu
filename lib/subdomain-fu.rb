@@ -94,6 +94,11 @@ module SubdomainFu
       (!has_subdomain?(subdomain) && !has_subdomain?(subdomain_from(host)))
   end
 
+  # Is this subdomain host equivalent to the host without subdomain in this host string?
+  def self.same_host?(subdomain_host, host)
+    SubdomainFu.host_without_subdomain(host) == subdomain_host
+  end
+
   def self.override_only_path?
     self.override_only_path
   end
