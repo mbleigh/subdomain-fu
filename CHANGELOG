@@ -1,6 +1,6 @@
 == v0.6.2 2009-10-12
 * Merging forks adding:
-*  same_host? method
+*  same_host? method and tests
 *  improved README
 *  new test coverage for override_only_path
 
@@ -33,3 +33,4 @@
 == 2008-06-25
 
 * Removed stray puts
+git://github.com/mbleigh/subdomain-fu.git
