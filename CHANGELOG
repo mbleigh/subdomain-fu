@@ -1,4 +1,10 @@
-== 2009-09-16
+== v0.6.2 2009-10-12
+* Merging forks adding same_host? method, and improved README
+
+== v0.6.1 2009-09-16
+* Fixed Readme Typo
+
+== v0.6.0 2009-09-16
 
 * Added has_domain? method
 * Protect current_domain from IP access
