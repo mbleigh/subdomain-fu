@@ -1,5 +1,8 @@
 == v0.6.2 2009-10-12
-* Merging forks adding same_host? method, and improved README
+* Merging forks adding:
+*  same_host? method
+*  improved README
+*  new test coverage for override_only_path
 
 == v0.6.1 2009-09-16
 * Fixed Readme Typo

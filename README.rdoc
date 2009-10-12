@@ -36,7 +36,7 @@ Specifying "false" will remove any current subdomain:
 users_url(:subdomain => false)  # => http://intridea.com/users
 
 You should exercise caution using the :only_path option when you want to change
-subdomains.  If you want the plugin to insure that you switch subdomains when
+subdomains.  If you want the plugin to ensure that you switch subdomains when
 you mean to, you should set SubdomainFu.override_only_path to true in your
 application configuration. This will disregard :only_path in routing helpers. 
 With this option, if I were at http://intridea.com
@@ -48,7 +48,8 @@ users_path(:subdomain => false) # => /users
 In this way you can rest assured that you will never misdirect your links to the
 same subdomain when you meant to change it.
 
-Note that in the past this was the default behavior of the plugin.
+Note that in this was originally the default behavior of the plugin, but has not always been so,
+and so may constitute a change for you when upgrading to the latest and greatest.
                               
 
 == Use in controllers and views
