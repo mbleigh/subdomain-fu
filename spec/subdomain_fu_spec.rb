@@ -221,6 +221,17 @@ describe "SubdomainFu" do
     it { SubdomainFu.same_subdomain?("www","awesome.localhost").should be_false }
   end
 
+  describe "#same_host?" do
+    it { SubdomainFu.same_host?("localhost","awesome.localhost").should be_true }
+    it { SubdomainFu.same_host?("localhost","www.localhost").should be_true }
+    it { SubdomainFu.same_host?("localhost","localhost").should be_true }
+    it { SubdomainFu.same_host?("awesome","awesome.localhost").should be_false }
+    it { SubdomainFu.same_host?("awesome","cool.localhost").should be_false }
+    it { SubdomainFu.same_host?("awesome","www.localhost").should be_false }
+    it { SubdomainFu.same_host?("awesome","localhost").should be_false }
+    it { SubdomainFu.same_host?(nil,"www.localhost").should be_false }
+  end
+
   describe "#needs_rewrite?" do
     it { SubdomainFu.needs_rewrite?("www","www.localhost").should be_false }
     it { SubdomainFu.needs_rewrite?("www","localhost").should be_false }
