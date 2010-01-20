@@ -13,6 +13,8 @@ module SubdomainFu
       result << "conditions[:subdomain] === env[:subdomain]" if conditions[:subdomain] && conditions[:subdomain] != true && conditions[:subdomain] != false
       result << "SubdomainFu.has_subdomain?(env[:subdomain])" if conditions[:subdomain] == true
       result << "!SubdomainFu.has_subdomain?(env[:subdomain])" if conditions[:subdomain] == false
+      result << "conditions[:domain] === env[:domain]" if conditions[:domain]
+      result << "conditions[:host] === env[:host]" if conditions[:host]
       result
     end
   end
