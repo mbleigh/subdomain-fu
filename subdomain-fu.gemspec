@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{subdomain-fu}
-  s.version = "0.5.4"
+  s.version = "1.0.0.beta2"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Bleigh"]
-  s.date = %q{2010-01-18}
+  s.date = %q{2010-02-09}
   s.description = %q{SubdomainFu is a Rails plugin to provide all of the basic functionality necessary to handle multiple subdomain applications (such as Basecamp-esque subdomain accounts and more).}
   s.email = %q{michael@intridea.com}
   s.extra_rdoc_files = [
@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION.yml",
      "lib/subdomain-fu.rb",
-     "lib/subdomain_fu/routing_extensions.rb",
      "lib/subdomain_fu/url_rewriter.rb",
      "rails/init.rb",
      "spec/spec.opts",
