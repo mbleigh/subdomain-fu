@@ -15,9 +15,10 @@ install it as a traditional plugin:
 
   script/plugin install git://github.com/intridea/subdomain-fu.git
   
-To use it as a gem, add it to your Gemfile:
+To use it as a gem, add it to your Gemfile. Until Rails 3 is officially released,
+the Rails 3 version of the plugin is only available as a prerelease gem:
 
-  gem 'subdomain-fu'
+  gem 'subdomain-fu', '1.0.0.beta2'
 
 == Examples
 
