@@ -179,3 +179,5 @@ module SubdomainFu
     end
   end
 end
+
+require 'subdomain_fu/rails'
