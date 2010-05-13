@@ -67,6 +67,7 @@ describe "SubdomainFu" do
   end
 
   it "#host_without_subdomain should chop of the subdomain and return the rest" do
+    SubdomainFu.host_without_subdomain("localhost:3000").should == "localhost:3000"
     SubdomainFu.host_without_subdomain("awesome.localhost:3000").should == "localhost:3000"
     SubdomainFu.host_without_subdomain("something.awful.localhost:3000").should == "localhost:3000"
   end
@@ -94,6 +95,11 @@ describe "SubdomainFu" do
 
     it "should change the subdomain if it's different" do
       SubdomainFu.rewrite_host_for_subdomains("cool","www.localhost").should == "cool.localhost"
+    end
+
+    it "should not change the subdomain for a host the same or smaller than the tld size" do
+      SubdomainFu.tld_size = 1
+      SubdomainFu.rewrite_host_for_subdomains("cool","localhost").should == "localhost"
     end
 
     it "should remove the subdomain if passed false when it's not a mirror" do

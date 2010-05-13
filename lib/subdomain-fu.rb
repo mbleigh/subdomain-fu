@@ -63,7 +63,7 @@ module SubdomainFu
 
   def self.host_without_subdomain(host)
     parts = host.split('.')
-    parts[-(SubdomainFu.tld_size+1)..-1].join(".")
+    Array(parts[-(SubdomainFu.tld_size+1)..-1]).join(".")
   end
 
   # Rewrites the subdomain of the host unless they are equivalent (i.e. mirrors of each other)
@@ -99,11 +99,12 @@ module SubdomainFu
   end
 
   def self.needs_rewrite?(subdomain, host)
+    return false if host.split('.').size <= tld_size
+    
     case subdomain
       when nil
         #rewrite when there is a preferred mirror set and there is no subdomain on the host
-        return true if self.preferred_mirror && subdomain_from(host).nil?
-        return false
+        return self.preferred_mirror && subdomain_from(host).nil?
       when false
         h = subdomain_from(host)
         #if the host has a subdomain
@@ -116,14 +117,8 @@ module SubdomainFu
           #it { SubdomainFu.needs_rewrite?(false,"www.localhost").should be_false }
           return false if is_mirror?(h)
         end
-        return self.crazy_rewrite_rule(subdomain, host)
-      else
-        return self.crazy_rewrite_rule(subdomain, host)
     end
-  end
 
-  #This is a black box of crazy!  So I split some of the simpler logic out into the case statement above to make my brain happy!
-  def self.crazy_rewrite_rule(subdomain, host)
     (!has_subdomain?(subdomain) && preferred_mirror?(subdomain) && !preferred_mirror?(subdomain_from(host))) ||
       !same_subdomain?(subdomain, host)
   end
