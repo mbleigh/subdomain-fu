@@ -136,7 +136,7 @@ module SubdomainFu
   def self.current_domain(request)
     domain = ""
     domain << request.subdomains[1..-1].join(".") + "." if request.subdomains.length > 1
-    domain << request.domain + request.port_string
+    domain << request.domain.to_s + request.port_string
   end
 
   module Controller
