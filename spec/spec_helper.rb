@@ -1,14 +1,14 @@
 begin
   require File.dirname(__FILE__) + '/../../../../spec/spec_helper'
-rescue LoadError
-  puts "You need to install rspec in your base app"
-  exit
+#rescue LoadError
+#  puts "You need to install RSpec in your base app. Add 'rspec-rails' to your Gemfile."
+#  exit
 end
 
 plugin_spec_dir = File.dirname(__FILE__)
 ActiveRecord::Base.logger = Logger.new(plugin_spec_dir + "/debug.log")
 
-ActionController::Routing::Routes.draw do |map|
+Rails3::Application.routes.draw do |map|
   map.needs_subdomain '/needs_subdomain', :controller => "fu", :action => "awesome"
   map.no_subdomain '/no_subdomain', :controller => "fu", :action => "lame"
   map.needs_awesome '/needs_awesome', :controller => "fu", :action => "lame"
