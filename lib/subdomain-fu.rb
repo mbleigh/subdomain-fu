@@ -124,12 +124,7 @@ module SubdomainFu
     case subdomain
       when nil
         #rewrite when there is a preferred mirror set and there is no subdomain on the host
-<<<<<<< HEAD
-        return true if config.preferred_mirror && subdomain_from(host).nil?
-        return false
-=======
-        return self.preferred_mirror && subdomain_from(host).nil?
->>>>>>> collectiveidea/master
+        return config.preferred_mirror && subdomain_from(host).nil?
       when false
         h = subdomain_from(host)
         #if the host has a subdomain
