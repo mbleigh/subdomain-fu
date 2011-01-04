@@ -2,32 +2,32 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 describe "SubdomainFu" do
   before do
-    SubdomainFu.tld_sizes = SubdomainFu::DEFAULT_TLD_SIZES.dup
-    SubdomainFu.mirrors = SubdomainFu::DEFAULT_MIRRORS.dup
-    SubdomainFu.preferred_mirror = nil
+    SubdomainFu.config.tld_sizes = SubdomainFu::Configuration.defaults[:tld_sizes].dup
+    SubdomainFu.config.mirrors = SubdomainFu::Configuration.defaults[:mirrors].dup
+    SubdomainFu.config.preferred_mirror = nil
   end
 
   describe "TLD Sizes" do
     before do
-      SubdomainFu.tld_sizes = SubdomainFu::DEFAULT_TLD_SIZES.dup
+      SubdomainFu.config.tld_sizes = SubdomainFu::Configuration.defaults[:tld_sizes].dup
     end
 
-    it { SubdomainFu.tld_sizes.should be_kind_of(Hash) }
+    it { SubdomainFu.config.tld_sizes.should be_kind_of(Hash) }
 
     it "should have default values for development, test, and production" do
-      SubdomainFu.tld_sizes[:development].should == 0
-      SubdomainFu.tld_sizes[:test].should        == 0
-      SubdomainFu.tld_sizes[:production].should  == 1
+      SubdomainFu.config.tld_sizes[:development].should == 0
+      SubdomainFu.config.tld_sizes[:test].should        == 0
+      SubdomainFu.config.tld_sizes[:production].should  == 1
     end
 
     it "#tld_size should be for the current environment" do
-      SubdomainFu.tld_size.should == SubdomainFu.tld_sizes[RAILS_ENV.to_sym]
+      SubdomainFu.config.tld_size.should == SubdomainFu.config.tld_sizes[Rails.env.to_sym]
     end
 
     it "should be able to be set for the current environment" do
-      SubdomainFu.tld_size = 5
-      SubdomainFu.tld_size.should == 5
-      SubdomainFu.tld_sizes[:test].should == 5
+      SubdomainFu.config.tld_size = 5
+      SubdomainFu.config.tld_size.should == 5
+      SubdomainFu.config.tld_sizes[:test].should == 5
     end
   end
 
@@ -37,7 +37,7 @@ describe "SubdomainFu" do
     end
 
     it "should be false for mirrored subdomains" do
-      SubdomainFu.has_subdomain?(SubdomainFu.mirrors.first).should be_false
+      SubdomainFu.has_subdomain?(SubdomainFu.config.mirrors.first).should be_false
     end
 
     it "shoud be false for a nil or blank subdomain" do
@@ -50,11 +50,11 @@ describe "SubdomainFu" do
   describe "#subdomain_from" do
     it "should return the subdomain based on the TLD of the current environment" do
       SubdomainFu.subdomain_from("awesome.localhost").should == "awesome"
-      SubdomainFu.tld_size = 2
+      SubdomainFu.config.tld_size = 2
       SubdomainFu.subdomain_from("awesome.localhost.co.uk").should == "awesome"
-      SubdomainFu.tld_size = 1
+      SubdomainFu.config.tld_size = 1
       SubdomainFu.subdomain_from("awesome.localhost.com").should == "awesome"
-      SubdomainFu.tld_size = 0
+      SubdomainFu.config.tld_size = 0
     end
 
     it "should join deep subdomains with a period" do
@@ -75,7 +75,7 @@ describe "SubdomainFu" do
   describe "#preferred_mirror?" do
     describe "when preferred_mirror is false" do
       before do
-        SubdomainFu.preferred_mirror = false
+        SubdomainFu.config.preferred_mirror = false
       end
 
       it "should return true for false" do
@@ -98,7 +98,7 @@ describe "SubdomainFu" do
     end
 
     it "should not change the subdomain for a host the same or smaller than the tld size" do
-      SubdomainFu.tld_size = 1
+      SubdomainFu.config.tld_size = 1
       SubdomainFu.rewrite_host_for_subdomains("cool","localhost").should == "localhost"
     end
 
@@ -116,7 +116,7 @@ describe "SubdomainFu" do
 
     describe "when preferred_mirror is false" do
       before do
-        SubdomainFu.preferred_mirror = false
+        SubdomainFu.config.preferred_mirror = false
       end
 
       it "should remove the subdomain if passed false when it is a mirror" do
@@ -219,7 +219,7 @@ describe "SubdomainFu" do
 
     describe "when preferred_mirror is false" do
       before do
-        SubdomainFu.preferred_mirror = false
+        SubdomainFu.config.preferred_mirror = false
       end
 
       it { SubdomainFu.needs_rewrite?("www","www.localhost").should be_false }
@@ -236,7 +236,7 @@ describe "SubdomainFu" do
 
     describe "when preferred_mirror is string" do
       before do
-        SubdomainFu.preferred_mirror = "www"
+        SubdomainFu.config.preferred_mirror = "www"
       end
 
       it { SubdomainFu.needs_rewrite?("www","www.localhost").should be_false }

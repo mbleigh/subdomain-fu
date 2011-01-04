@@ -1,32 +1,34 @@
-begin
-  require File.dirname(__FILE__) + '/../../../../spec/spec_helper'
-#rescue LoadError
-#  puts "You need to install RSpec in your base app. Add 'rspec-rails' to your Gemfile."
-#  exit
+require 'action_controller/railtie'
+require 'active_support/core_ext/hash/slice'
+require 'rspec'
+require 'subdomain-fu'
+
+Rails.env = 'test'
+
+module SubdomainFu
+  class TestApplication < Rails::Application
+  end
 end
 
-plugin_spec_dir = File.dirname(__FILE__)
-ActiveRecord::Base.logger = Logger.new(plugin_spec_dir + "/debug.log")
+SubdomainFu::TestApplication.routes.draw do
+  match '/needs_subdomain' => "fu#awesome", :as => 'needs_subdomain'
+  match '/no_subdomain' => "fu#lame", :as => 'no_subdomain'
+  match '/needs_awesome' => "fu#lame", :as => 'needs_awesome'
 
-Rails3::Application.routes.draw do |map|
-  map.needs_subdomain '/needs_subdomain', :controller => "fu", :action => "awesome"
-  map.no_subdomain '/no_subdomain', :controller => "fu", :action => "lame"
-  map.needs_awesome '/needs_awesome', :controller => "fu", :action => "lame"
-
-  map.resources :foos do |fu|
-    fu.resources :bars
+  resources :foos do
+    resources :bars
   end
 
-  map.connect '/', :controller => "site", :action => "home", :conditions => {:subdomain => false}
-  map.connect '/', :controller => "app", :action => "home", :conditions => {:subdomain => true}
-  map.connect '/', :controller => "mobile", :action => "home", :conditions => {:subdomain => "m"}
+  match '/' => "site#home", :constraints => { :subdomain => '' }
+  #match '/' => "app#home", :constraints => { :subdomain => true }
+  match '/' => "mobile#home", :constraints => { :subdomain => "m" }
 
-  map.connect '/subdomain_here', :controller => "app", :action => "success", :conditions => {:subdomain => true}
-  map.connect '/no_subdomain_here', :controller => "site", :action => "success", :conditions => {:subdomain => false}
-  map.connect '/m_subdomain_here', :controller => "mobile", :action => "success", :conditions => {:subdomain => "m"}
-  map.connect '/numbers_only_here', :controller => "numbers", :action => "success", :conditions => {:subdomain => /[0-9]+/}
+  #match '/subdomain_here' => "app#success", :constraints => { :subdomain => true }
+  match '/no_subdomain_here' => "site#success", :constraints => { :subdomain => '' }
+  match '/m_subdomain_here' => "mobile#success", :constraints => { :subdomain => "m" }
+  match '/numbers_only_here' => "numbers#success", :constraints => { :subdomain => /[0-9]+/ }
 
-  map.connect '/:controller/:action/:id'
+  match ':controller(/:action(/:id(.:format)))'
 end
 
 class Paramed
@@ -39,4 +41,4 @@ class Paramed
   end
 end
 
-include ActionController::UrlWriter
+include Rails.application.routes.url_helpers
