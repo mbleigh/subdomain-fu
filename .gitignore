@@ -5,3 +5,5 @@
 /pkg
 .idea
 *.gem
+/coverage
+/coverage.data
