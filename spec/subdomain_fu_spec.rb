@@ -159,6 +159,11 @@ describe "SubdomainFu" do
       SubdomainFu.current_subdomain(request).should be_nil
     end
 
+    it "should return current subdomain without a mirror" do
+      request = mock("request", :subdomains => ["www", "stuff"])
+      SubdomainFu.current_subdomain(request).should == "stuff"
+    end
+
     it "should return the whole thing (including a .) if there's multiple subdomains" do
       request = mock("request", :subdomains => ["awesome","rad"])
       SubdomainFu.current_subdomain(request).should == "awesome.rad"

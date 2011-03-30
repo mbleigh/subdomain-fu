@@ -146,7 +146,7 @@ module SubdomainFu
   end
 
   def self.current_subdomain(request)
-    subdomain = request.subdomains(SubdomainFu.config.tld_size).join(".")
+    subdomain = (request.subdomains(SubdomainFu.config.tld_size) - config.mirrors).join(".")
     if has_subdomain?(subdomain)
       subdomain
     else
