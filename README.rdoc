@@ -1,7 +1,6 @@
 = Changes in this fork
 
-[current_subdomain] will return all subdomains except for mirrors.
-For the URL http://www.stuff.example.com it will return "stuff" if "www" is configured as a mirror
+[current_subdomain] will return all subdomains except for mirrors. For the URL http://www.stuff.example.com it will return "stuff" if "www" is configured as a mirror
 
 = SubdomainFu
 
