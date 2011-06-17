@@ -1,36 +1,56 @@
-require 'subdomain_fu/routing_extensions'
 require 'subdomain_fu/url_rewriter'
 
 module SubdomainFu
-  # The length of the period-split top-level domain for each environment.
-  # For example, "localhost" has a tld_size of zero, and "something.co.uk"
-  # has a tld_size of two.
-  #
-  # To set a tld size for a given environment, just call SubdomainFu.tld_sizes[:environment] = value
-  DEFAULT_TLD_SIZES = {:development => 0, :test => 0, :production => 1}
-  mattr_accessor :tld_sizes
-  @@tld_sizes = DEFAULT_TLD_SIZES.dup
-
-  # Subdomains that are equivalent to going to the website with no subdomain at all.
-  # Defaults to "www" as the only member.
-  DEFAULT_MIRRORS = %w(www)
-  mattr_accessor :mirrors
-  @@mirrors = DEFAULT_MIRRORS.dup
-
-  mattr_accessor :preferred_mirror
-  @@preferred_mirror = nil
-
-  mattr_accessor :override_only_path
-  @@override_only_path = false
-
-  # Returns the TLD Size of the current environment.
-  def self.tld_size
-    tld_sizes[RAILS_ENV.to_sym]
+  class << self
+    attr_accessor :config
+    
+    def config
+      self.config = Configuration.new unless @config
+      @config
+    end
   end
 
-  # Sets the TLD Size of the current environment
-  def self.tld_size=(value)
-    tld_sizes[RAILS_ENV.to_sym] = value
+  # The configurable options of Subdomain Fu. Use like so:
+  # 
+  #     SubdomainFu.configure do |config|
+  #       config.tld_size = 2
+  #       config.preferred_mirror = 'www'
+  #     end
+  # 
+  # Available configurations are:
+  #
+  # <tt>tld_size</tt>: :: The size of the top-level domain. For example, 'localhost' is 0, 'example.com' is 1, and 'example.co.uk' is 2.
+  # <tt>mirrors</tt>: :: An array of subdomains that should be equivalent to no subdomain. Defaults to <tt>['www']</tt>.
+  # <tt>preferred_mirror</tt>: The preferred mirror subdomain to which to rewrite URLs. No subdomain is used by default.
+  # <tt>override_only_path</tt>: :: If <tt>true</tt>, changing the subdomain will emit a full URL in url_for options, even if it wouldn't have otherwise.
+  def self.configure
+    self.config ||= Configuration.new
+    yield(self.config)
+  end
+  
+  class Configuration
+    attr_accessor :tld_sizes, :mirrors, :preferred_mirror, :override_only_path
+    
+    @@defaults = {
+      :tld_sizes => {:development => 1, :test => 1, :production => 1},
+      :mirrors => %w(www),
+      :preferred_mirror => nil,
+      :override_only_path => false
+    }
+    
+    def initialize
+      @@defaults.each_pair do |k, v|
+        self.send("#{k}=", v)
+      end
+    end
+    
+    def tld_size=(size)
+      tld_sizes[Rails.env.to_sym] = size
+    end
+    
+    def tld_size
+      tld_sizes[Rails.env.to_sym]
+    end
   end
 
   def self.has_domain?(host)
@@ -39,23 +59,23 @@ module SubdomainFu
   
   # Is the current subdomain either nil or not a mirror?
   def self.has_subdomain?(subdomain)
-    subdomain != false && !subdomain.blank? && !SubdomainFu.mirrors.include?(subdomain)
+    subdomain != false && !subdomain.blank? && !SubdomainFu.config.mirrors.include?(subdomain)
   end
 
   def self.is_mirror?(subdomain)
-    subdomain != false && !subdomain.blank? && SubdomainFu.mirrors.include?(subdomain)
+    subdomain != false && !subdomain.blank? && SubdomainFu.config.mirrors.include?(subdomain)
   end
 
   # Is the subdomain a preferred mirror
   def self.preferred_mirror?(subdomain)
-    subdomain == SubdomainFu.preferred_mirror || SubdomainFu.preferred_mirror.nil?
+    subdomain == SubdomainFu.config.preferred_mirror || SubdomainFu.config.preferred_mirror.nil?
   end
 
   # Gets the subdomain from the host based on the TLD size
   def self.subdomain_from(host)
     return nil unless has_domain?(host)
     parts = host.split('.')
-    sub = parts[0..-(SubdomainFu.tld_size+2)].join(".")
+    sub = parts[0..-(SubdomainFu.config.tld_size+2)].join(".")
     sub.blank? ? nil : sub
   end
 
@@ -67,19 +87,19 @@ module SubdomainFu
 
   def self.host_without_subdomain(host)
     parts = host.split('.')
-    parts[-(SubdomainFu.tld_size+1)..-1].join(".")
+    parts[-(SubdomainFu.config.tld_size+1)..-1].join(".")
   end
 
   # Rewrites the subdomain of the host unless they are equivalent (i.e. mirrors of each other)
   def self.rewrite_host_for_subdomains(subdomain, host)
     if needs_rewrite?(subdomain, host)
-      change_subdomain_of_host(subdomain || SubdomainFu.preferred_mirror, host)
+      change_subdomain_of_host(subdomain || SubdomainFu.config.preferred_mirror, host)
     else
       if has_subdomain?(subdomain) || preferred_mirror?(subdomain_from(host)) ||
           (subdomain.nil? && has_subdomain?(subdomain_from(host)))
         host
       else
-        change_subdomain_of_host(SubdomainFu.preferred_mirror, host)
+        change_subdomain_of_host(SubdomainFu.config.preferred_mirror, host)
       end
     end
   end
@@ -104,14 +124,14 @@ module SubdomainFu
   end
 
   def self.override_only_path?
-    self.override_only_path
+    config.override_only_path
   end
 
   def self.needs_rewrite?(subdomain, host)
     case subdomain
       when nil
         #rewrite when there is a preferred mirror set and there is no subdomain on the host
-        return true if self.preferred_mirror && subdomain_from(host).nil?
+        return true if config.preferred_mirror && subdomain_from(host).nil?
         return false
       when false
         h = subdomain_from(host)
@@ -120,7 +140,7 @@ module SubdomainFu
           #rewrite when there is a subdomain in the host, and it is not a preferred mirror
           return true if !preferred_mirror?(h)
           #rewrite when there is a preferred mirror set and the subdomain of the host is not a mirror
-          return true if self.preferred_mirror && !is_mirror?(h)
+          return true if config.preferred_mirror && !is_mirror?(h)
           #no rewrite if host already has mirror subdomain
           #it { SubdomainFu.needs_rewrite?(false,"www.localhost").should be_false }
           return false if is_mirror?(h)
@@ -139,7 +159,7 @@ module SubdomainFu
 
   #returns nil or the subdomain(s)
   def self.current_subdomain(request)
-    subdomain = request.subdomains(SubdomainFu.tld_size).join(".")
+    subdomain = request.subdomains(SubdomainFu.config.tld_size).join(".")
     if has_subdomain?(subdomain)
       subdomain
     else
@@ -171,3 +191,5 @@ module SubdomainFu
     end
   end
 end
+
+require 'subdomain_fu/rails'
