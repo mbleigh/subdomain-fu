@@ -1,3 +1,7 @@
+= Changes in this fork
+
+[current_subdomain] will return all subdomains except for mirrors. For the URL http://www.stuff.example.com it will return "stuff" if "www" is configured as a mirror
+
 = SubdomainFu
 
 SubdomainFu provides a modern implementation of subdomain handling in Rails.
@@ -13,7 +17,7 @@ you are looking to use it on Rails 2.x, please install version v0.5.x instead.
 SubdomainFu is available both as a traditional plugin and a GemPlugin. To
 install it as a traditional plugin:
 
-  script/plugin install git://github.com/intridea/subdomain-fu.git
+  script/plugin install git://github.com/ramontayag/subdomain-fu.git
   
 To use it as a gem, add it to your Gemfile. Until Rails 3 is officially released,
 the Rails 3 version of the plugin is only available as a prerelease gem:

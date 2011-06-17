@@ -1,11 +1,11 @@
-require File.dirname(__FILE__) + '/spec_helper'
+require 'spec_helper'
 
 describe "SubdomainFu URL Writing" do
   before do
-    SubdomainFu.tld_size = 1
-    SubdomainFu.mirrors = SubdomainFu::DEFAULT_MIRRORS.dup
-    SubdomainFu.preferred_mirror = nil
-    SubdomainFu.override_only_path = false
+    SubdomainFu.config.tld_size = 1
+    SubdomainFu.config.mirrors = SubdomainFu::Configuration.defaults[:mirrors].dup
+    SubdomainFu.config.override_only_path = true
+    SubdomainFu.config.preferred_mirror = nil
     default_url_options[:host] = "example.com"
   end
 
@@ -23,11 +23,12 @@ describe "SubdomainFu URL Writing" do
     end
 
     it "should should not force the full url with :only_path if override_only_path is false (default)" do
+      SubdomainFu.config.override_only_path = false
       url_for(:controller => "something", :action => "other", :subdomain => "awesome", :only_path => true).should == "/something/other"
     end
 
     it "should should force the full url, even with :only_path if override_only_path is true" do
-      SubdomainFu.override_only_path = true
+      SubdomainFu.config.override_only_path = true
       url_for(:controller => "something", :action => "other", :subdomain => "awesome", :only_path => true).should == "http://awesome.example.com/something/other"
     end
   end
@@ -48,6 +49,7 @@ describe "SubdomainFu URL Writing" do
     end
 
     it "should should not force the full url with _path" do
+      SubdomainFu.config.override_only_path = false
       needs_subdomain_path(:subdomain => "awesome").should ==  "/needs_subdomain"
     end
 
@@ -57,6 +59,7 @@ describe "SubdomainFu URL Writing" do
     end
 
     it "should not force the full url even if it's a different subdomain" do
+      SubdomainFu.config.override_only_path = false
       default_url_options[:host] = "awesome.example.com"
       needs_subdomain_path(:subdomain => "crazy").should == "/needs_subdomain"
     end
@@ -73,7 +76,7 @@ describe "SubdomainFu URL Writing" do
 
     describe "With override_only_path set to true" do
       before(:each) do
-        SubdomainFu.override_only_path = true
+        SubdomainFu.config.override_only_path = true
       end
 
       it "should should force the full url, even with _path" do
@@ -141,7 +144,8 @@ describe "SubdomainFu URL Writing" do
 
   describe "Preferred Mirror" do
     before do
-      SubdomainFu.preferred_mirror = "www"
+      SubdomainFu.config.preferred_mirror = "www"
+      SubdomainFu.config.override_only_path = true
     end
 
     it "should switch to the preferred mirror instead of no subdomain" do
@@ -160,18 +164,18 @@ describe "SubdomainFu URL Writing" do
     end
 
     it "should force a switch to no subdomain on a mirror if preferred_mirror is false" do
-      SubdomainFu.preferred_mirror = false
+      SubdomainFu.config.preferred_mirror = false
       default_url_options[:host] = "www.example.com"
       needs_subdomain_url(:subdomain => false).should == "http://example.com/needs_subdomain"
     end
 
     after do
-      SubdomainFu.preferred_mirror = nil
+      SubdomainFu.config.preferred_mirror = nil
     end
   end
 
   after do
-    SubdomainFu.tld_size = 0
+    SubdomainFu.config.tld_size = 0
     default_url_options[:host] = "localhost"
   end
 end
