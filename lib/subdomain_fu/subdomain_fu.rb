@@ -131,7 +131,7 @@ module SubdomainFu
   end
 
   def self.needs_rewrite?(subdomain, host)
-    return false if host.count('.') < config.tld_size
+    return false unless host && host.count('.') >= config.tld_size
     case subdomain
       when nil
         #rewrite when there is a preferred mirror set and there is no subdomain on the host
