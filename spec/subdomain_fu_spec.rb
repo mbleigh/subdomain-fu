@@ -1,33 +1,59 @@
-require File.dirname(__FILE__) + '/spec_helper'
+require 'spec_helper'
 
 describe "SubdomainFu" do
   before do
-    SubdomainFu.tld_sizes = SubdomainFu::DEFAULT_TLD_SIZES.dup
-    SubdomainFu.mirrors = SubdomainFu::DEFAULT_MIRRORS.dup
-    SubdomainFu.preferred_mirror = nil
+    SubdomainFu.config.tld_sizes = SubdomainFu::Configuration.defaults[:tld_sizes].dup
+    SubdomainFu.config.mirrors = SubdomainFu::Configuration.defaults[:mirrors].dup
+    SubdomainFu.config.preferred_mirror = nil
   end
 
   describe "TLD Sizes" do
     before do
-      SubdomainFu.tld_sizes = SubdomainFu::DEFAULT_TLD_SIZES.dup
+      SubdomainFu.config.tld_sizes = SubdomainFu::Configuration.defaults[:tld_sizes].dup
     end
 
-    it { SubdomainFu.tld_sizes.should be_kind_of(Hash) }
+    it { SubdomainFu.config.tld_sizes.should be_kind_of(Hash) }
 
     it "should have default values for development, test, and production" do
-      SubdomainFu.tld_sizes[:development].should == 0
-      SubdomainFu.tld_sizes[:test].should        == 0
-      SubdomainFu.tld_sizes[:production].should  == 1
+      SubdomainFu.config.tld_sizes[:development].should == 0
+      SubdomainFu.config.tld_sizes[:test].should        == 0
+      SubdomainFu.config.tld_sizes[:production].should  == 1
     end
 
     it "#tld_size should be for the current environment" do
-      SubdomainFu.tld_size.should == SubdomainFu.tld_sizes[RAILS_ENV.to_sym]
+      SubdomainFu.config.tld_size.should == SubdomainFu.config.tld_sizes[Rails.env.to_sym]
     end
 
     it "should be able to be set for the current environment" do
-      SubdomainFu.tld_size = 5
-      SubdomainFu.tld_size.should == 5
-      SubdomainFu.tld_sizes[:test].should == 5
+      SubdomainFu.config.tld_size = 5
+      SubdomainFu.config.tld_size.should == 5
+      SubdomainFu.config.tld_sizes[:test].should == 5
+    end
+  end
+
+  describe "#has_domain?" do
+    it "should be true for domains with tld" do
+      SubdomainFu.has_domain?("my.example.com").should be_true
+      SubdomainFu.has_domain?("bonkers.example.net").should be_true
+    end
+
+    it "should be false for IP addresses" do
+      SubdomainFu.has_domain?("192.168.100.252").should be_false
+      SubdomainFu.has_domain?("127.0.0.1").should be_false
+      SubdomainFu.has_domain?("4.2.2.2").should be_false
+    end
+
+    it "should be true for localhost" do
+      SubdomainFu.has_domain?("localhost:3000").should be_true
+      SubdomainFu.has_domain?("www.localhost").should be_true
+      SubdomainFu.has_domain?("www.localhost:3000").should be_true
+      SubdomainFu.has_domain?("localhost").should be_true
+    end
+
+    it "shoud be false for a nil or blank subdomain" do
+      SubdomainFu.has_domain?("").should be_false
+      SubdomainFu.has_domain?(nil).should be_false
+      SubdomainFu.has_domain?(false).should be_false
     end
   end
 
@@ -37,7 +63,7 @@ describe "SubdomainFu" do
     end
 
     it "should be false for mirrored subdomains" do
-      SubdomainFu.has_subdomain?(SubdomainFu.mirrors.first).should be_false
+      SubdomainFu.has_subdomain?(SubdomainFu.config.mirrors.first).should be_false
     end
 
     it "shoud be false for a nil or blank subdomain" do
@@ -50,11 +76,11 @@ describe "SubdomainFu" do
   describe "#subdomain_from" do
     it "should return the subdomain based on the TLD of the current environment" do
       SubdomainFu.subdomain_from("awesome.localhost").should == "awesome"
-      SubdomainFu.tld_size = 2
+      SubdomainFu.config.tld_size = 2
       SubdomainFu.subdomain_from("awesome.localhost.co.uk").should == "awesome"
-      SubdomainFu.tld_size = 1
+      SubdomainFu.config.tld_size = 1
       SubdomainFu.subdomain_from("awesome.localhost.com").should == "awesome"
-      SubdomainFu.tld_size = 0
+      SubdomainFu.config.tld_size = 0
     end
 
     it "should join deep subdomains with a period" do
@@ -67,6 +93,7 @@ describe "SubdomainFu" do
   end
 
   it "#host_without_subdomain should chop of the subdomain and return the rest" do
+    SubdomainFu.host_without_subdomain("localhost:3000").should == "localhost:3000"
     SubdomainFu.host_without_subdomain("awesome.localhost:3000").should == "localhost:3000"
     SubdomainFu.host_without_subdomain("something.awful.localhost:3000").should == "localhost:3000"
   end
@@ -74,7 +101,7 @@ describe "SubdomainFu" do
   describe "#preferred_mirror?" do
     describe "when preferred_mirror is false" do
       before do
-        SubdomainFu.preferred_mirror = false
+        SubdomainFu.config.preferred_mirror = false
       end
 
       it "should return true for false" do
@@ -96,6 +123,11 @@ describe "SubdomainFu" do
       SubdomainFu.rewrite_host_for_subdomains("cool","www.localhost").should == "cool.localhost"
     end
 
+    it "should not change the subdomain for a host the same or smaller than the tld size" do
+      SubdomainFu.config.tld_size = 1
+      SubdomainFu.rewrite_host_for_subdomains("cool","localhost").should == "localhost"
+    end
+
     it "should remove the subdomain if passed false when it's not a mirror" do
       SubdomainFu.rewrite_host_for_subdomains(false,"cool.localhost").should == "localhost"
     end
@@ -110,7 +142,7 @@ describe "SubdomainFu" do
 
     describe "when preferred_mirror is false" do
       before do
-        SubdomainFu.preferred_mirror = false
+        SubdomainFu.config.preferred_mirror = false
       end
 
       it "should remove the subdomain if passed false when it is a mirror" do
@@ -153,6 +185,11 @@ describe "SubdomainFu" do
       SubdomainFu.current_subdomain(request).should be_nil
     end
 
+    it "should return current subdomain without a mirror" do
+      request = mock("request", :subdomains => ["www", "stuff"])
+      SubdomainFu.current_subdomain(request).should == "stuff"
+    end
+
     it "should return the whole thing (including a .) if there's multiple subdomains" do
       request = mock("request", :subdomains => ["awesome","rad"])
       SubdomainFu.current_subdomain(request).should == "awesome.rad"
@@ -168,6 +205,11 @@ describe "SubdomainFu" do
     it "should return empty string if there is no domain" do
       request = mock("request", :subdomains => [], :domain => "", :port_string => "")
       SubdomainFu.current_domain(request).should == ""
+    end
+    
+    it "should return an IP address if there is only an IP address" do
+      request = mock("request", :subdomains => [], :domain => "127.0.0.1", :port_string => "")
+      SubdomainFu.current_domain(request).should == "127.0.0.1"
     end
 
     it "should return the current domain if there is only one level of subdomains" do
@@ -195,6 +237,17 @@ describe "SubdomainFu" do
     it { SubdomainFu.same_subdomain?("www","awesome.localhost").should be_false }
   end
 
+  describe "#same_host?" do
+    it { SubdomainFu.same_host?("localhost","awesome.localhost").should be_true }
+    it { SubdomainFu.same_host?("localhost","www.localhost").should be_true }
+    it { SubdomainFu.same_host?("localhost","localhost").should be_true }
+    it { SubdomainFu.same_host?("awesome","awesome.localhost").should be_false }
+    it { SubdomainFu.same_host?("awesome","cool.localhost").should be_false }
+    it { SubdomainFu.same_host?("awesome","www.localhost").should be_false }
+    it { SubdomainFu.same_host?("awesome","localhost").should be_false }
+    it { SubdomainFu.same_host?(nil,"www.localhost").should be_false }
+  end
+
   describe "#needs_rewrite?" do
     it { SubdomainFu.needs_rewrite?("www","www.localhost").should be_false }
     it { SubdomainFu.needs_rewrite?("www","localhost").should be_false }
@@ -205,10 +258,11 @@ describe "SubdomainFu" do
     it { SubdomainFu.needs_rewrite?(false,"awesome.localhost").should be_true }
     it { SubdomainFu.needs_rewrite?(false,"www.localhost").should be_false }
     it { SubdomainFu.needs_rewrite?("www","awesome.localhost").should be_true }
+    it { SubdomainFu.needs_rewrite?(nil, nil).should be_false }
 
     describe "when preferred_mirror is false" do
       before do
-        SubdomainFu.preferred_mirror = false
+        SubdomainFu.config.preferred_mirror = false
       end
 
       it { SubdomainFu.needs_rewrite?("www","www.localhost").should be_false }
@@ -225,7 +279,7 @@ describe "SubdomainFu" do
 
     describe "when preferred_mirror is string" do
       before do
-        SubdomainFu.preferred_mirror = "www"
+        SubdomainFu.config.preferred_mirror = "www"
       end
 
       it { SubdomainFu.needs_rewrite?("www","www.localhost").should be_false }
