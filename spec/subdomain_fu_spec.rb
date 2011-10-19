@@ -258,6 +258,7 @@ describe "SubdomainFu" do
     it { SubdomainFu.needs_rewrite?(false,"awesome.localhost").should be_true }
     it { SubdomainFu.needs_rewrite?(false,"www.localhost").should be_false }
     it { SubdomainFu.needs_rewrite?("www","awesome.localhost").should be_true }
+    it { SubdomainFu.needs_rewrite?(nil, nil).should be_false }
 
     describe "when preferred_mirror is false" do
       before do
