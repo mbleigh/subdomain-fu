@@ -1,6 +1,10 @@
 .DS_Store
 *.log
+**.swp
 .svn
 /pkg
 .idea
+.idea/*
 *.gem
+/coverage
+/coverage.data
