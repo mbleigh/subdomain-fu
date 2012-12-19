@@ -117,5 +117,14 @@ http://yehudakatz.com/2009/12/26/the-rails-3-router-rack-it-up/
 * GitHub Repository: http://github.com/intridea/subdomain-fu
 * RDocs: http://rdoc.info/projects/intridea/subdomain-fu
 
-Copyright (c) 2008-2010 Michael Bleigh (http://www.mbleigh.com/) and 
-Intridea, Inc. (http://www.intridea.com/). Released under the MIT license
+== Thanks
+
+* Michael Bleigh (author) - {<img src="http://api.coderwall.com/mbleigh/endorsecount.png" />}[http://coderwall.com/mbleigh]
+* Peter Boling (maintainer) - {<img src="http://api.coderwall.com/pboling/endorsecount.png" />}[http://coderwall.com/pboling]
+
+== Legal
+
+Copyright (c) 2012 Michael Bleigh (http://www.mbleigh.com/), Peter Boling (http://www.railsbling.com/), and Intridea, Inc. (http://www.intridea.com/)
+Copyright (c) 2008-2011 Michael Bleigh (http://www.mbleigh.com/) and Intridea, Inc. (http://www.intridea.com/).
+
+Released under the MIT license
