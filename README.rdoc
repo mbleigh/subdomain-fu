@@ -131,7 +131,7 @@ dependency on this gem using the {Pessimistic Version Constraint}[http://docs.ru
 
 For example:
 
-    spec.add_dependency 'twitter', '~> 4.0'
+    spec.add_dependency 'subdomain-fu', '~> 4.0'
 
 == Thanks
 
