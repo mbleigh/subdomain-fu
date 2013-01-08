@@ -117,6 +117,22 @@ http://yehudakatz.com/2009/12/26/the-rails-3-router-rack-it-up/
 * GitHub Repository: http://github.com/intridea/subdomain-fu
 * RDocs: http://rdoc.info/projects/intridea/subdomain-fu
 
+== Versioning
+
+This library aims to adhere to {Semantic Versioning 2.0.0}[http://semver.org/].
+Violations of this scheme should be reported as bugs. Specifically, 
+if a minor or patch version is released that breaks backward 
+compatibility, a new version should be immediately released that
+restores compatibility. Breaking changes to the public API will 
+only be introduced with new major versions.
+
+As a result of this policy, you can (and should) specify a 
+dependency on this gem using the {Pessimistic Version Constraint}[http://docs.rubygems.org/read/chapter/16#page74] with two digits of precision. 
+
+For example:
+
+    spec.add_dependency 'twitter', '~> 4.0'
+
 == Thanks
 
 * Michael Bleigh (author) - {<img src="http://api.coderwall.com/mbleigh/endorsecount.png" />}[http://coderwall.com/mbleigh]
