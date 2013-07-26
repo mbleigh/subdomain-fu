@@ -171,59 +171,59 @@ describe "SubdomainFu" do
 
   describe "#current_subdomain" do
     it "should return the current subdomain if there is one" do
-      request = mock("request", :subdomains => ["awesome"])
+      request = double("request", :subdomains => ["awesome"])
       SubdomainFu.current_subdomain(request).should == "awesome"
     end
 
     it "should return nil if there's no subdomain" do
-      request = mock("request", :subdomains => [])
+      request = double("request", :subdomains => [])
       SubdomainFu.current_subdomain(request).should be_nil
     end
 
     it "should return nil if the current subdomain is a mirror" do
-      request = mock("request", :subdomains => ["www"])
+      request = double("request", :subdomains => ["www"])
       SubdomainFu.current_subdomain(request).should be_nil
     end
 
     it "should return current subdomain without a mirror" do
-      request = mock("request", :subdomains => ["www", "stuff"])
+      request = double("request", :subdomains => ["www", "stuff"])
       SubdomainFu.current_subdomain(request).should == "stuff"
     end
 
     it "should return the whole thing (including a .) if there's multiple subdomains" do
-      request = mock("request", :subdomains => ["awesome","rad"])
+      request = double("request", :subdomains => ["awesome","rad"])
       SubdomainFu.current_subdomain(request).should == "awesome.rad"
     end
   end
 
   describe "#current_domain" do
     it "should return the current domain if there is one" do
-      request = mock("request", :subdomains => [], :domain => "example.com", :port_string => "")
+      request = double("request", :subdomains => [], :domain => "example.com", :port_string => "")
       SubdomainFu.current_domain(request).should == "example.com"
     end
 
     it "should return empty string if there is no domain" do
-      request = mock("request", :subdomains => [], :domain => "", :port_string => "")
+      request = double("request", :subdomains => [], :domain => "", :port_string => "")
       SubdomainFu.current_domain(request).should == ""
     end
     
     it "should return an IP address if there is only an IP address" do
-      request = mock("request", :subdomains => [], :domain => "127.0.0.1", :port_string => "")
+      request = double("request", :subdomains => [], :domain => "127.0.0.1", :port_string => "")
       SubdomainFu.current_domain(request).should == "127.0.0.1"
     end
 
     it "should return the current domain if there is only one level of subdomains" do
-      request = mock("request", :subdomains => ["www"], :domain => "example.com", :port_string => "")
+      request = double("request", :subdomains => ["www"], :domain => "example.com", :port_string => "")
       SubdomainFu.current_domain(request).should == "example.com"
     end
 
     it "should return everything but the first level of subdomain when there are multiple levels of subdomains" do
-      request = mock("request", :subdomains => ["awesome","rad","cheese","chevy","ford"], :domain => "example.com", :port_string => "")
+      request = double("request", :subdomains => ["awesome","rad","cheese","chevy","ford"], :domain => "example.com", :port_string => "")
       SubdomainFu.current_domain(request).should == "rad.cheese.chevy.ford.example.com"
     end
 
     it "should return the domain with port if port is given" do
-      request = mock("request", :subdomains => ["awesome","rad","cheese","chevy","ford"], :domain => "example.com", :port_string => ":3000")
+      request = double("request", :subdomains => ["awesome","rad","cheese","chevy","ford"], :domain => "example.com", :port_string => ":3000")
       SubdomainFu.current_domain(request).should == "rad.cheese.chevy.ford.example.com:3000"
     end
   end
